@@ -11,11 +11,13 @@ import Notfund from './pages/notfound/Notfund';
 import Workshops from './pages/workshops/Workshops';
 import Workdetails from './pages/workshopsdetail/Workdetails';
 import Products from './pages/products/Products';
-
+import Navbars from "./usercomponents/Navbar";
 
 const Userlayout = () => {
     return (
         <div>
+            <Navbars />
+
             <Routes>
                 <Route index element={<Home />} />
                 <Route path="products" element={<Products/>} />

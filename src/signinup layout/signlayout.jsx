@@ -2,18 +2,18 @@ import React from 'react'
 import { Routes } from "react-router-dom";
 import { Route } from "react-router-dom";
 import Signup from './pages/signup/signup';
-import Login from './pages/login/login';
+import Sellerlogin from "./pages/login/Sellerlogin.jsx"
+import Userlayout from '../userlayout/Userlayout.jsx';
 const Signlayout = () => {
     return (
         <div>
             <Routes>
-                <Route path='login' element={<Login />} />
-                <Route path='signup' element={<Signup />} />
-
+                <Route path="userlogin" element={<Userlogin />} />
+                <Route path="sellerlogin" element={<Sellerlogin />} />
+                <Route path="signup" element={<Signup />} />
             </Routes>
-
         </div>
-    )
+    );
 }
 
 export default Signlayout
