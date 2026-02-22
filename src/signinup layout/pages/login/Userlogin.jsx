@@ -32,7 +32,7 @@ const Userlogin = () => {
 
   const validatePassword = (value) => {
     if (value.length < 8) {
-      setPasswordError("Password must be at least 8 characters.");
+      setPasswordError("Password must be at least 8 characters");
     } else {
       setPasswordError("");
     }
