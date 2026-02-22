@@ -11,7 +11,6 @@ import {
   EyeIcon,
   EyeSlashIcon,
   SpeakerWaveIcon,
-  MicrophoneIcon,
 } from "@heroicons/react/24/outline";
 
 const Sellerlogin = () => {
@@ -52,7 +51,11 @@ const Sellerlogin = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log("Login attempt:", { phoneNumber, password });
+    if (!phoneError && !passwordError && phoneNumber && password) {
+      console.log("Login successful");
+    } else {
+      console.log("Login failed: Please check your inputs");
+    }
   };
 
   return (
