@@ -12,7 +12,7 @@ import {
   EyeSlashIcon,
   SpeakerWaveIcon,
 } from "@heroicons/react/24/outline";
-
+import { Link } from "react-router-dom";
 const Sellerlogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -210,8 +210,8 @@ const Sellerlogin = () => {
                 <Typography variant="small" className="text-gray-600">
                   ليس لديك حساب؟
                 </Typography>
-                <a
-                  href="/registration"
+                <Link
+                  to="/registration"
                   className="font-medium text-[#D63A3A] hover:underline flex items-center gap-1"
                 >
                   سجل كبائع
@@ -222,7 +222,7 @@ const Sellerlogin = () => {
                   >
                     <SpeakerWaveIcon className="h-4 w-4 text-[#D63A3A]" />
                   </button>
-                </a>
+                </Link>
               </div>
             </form>
           </CardBody>

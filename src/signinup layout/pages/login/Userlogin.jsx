@@ -11,7 +11,7 @@ import {
   EyeIcon,
   EyeSlashIcon,
 } from "@heroicons/react/24/outline";
-
+import { Link } from "react-router-dom";
 const Userlogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -160,6 +160,32 @@ const Userlogin = () => {
               >
                 Login
               </Button>
+              <div className="relative py-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300" />
+                </div>
+                <div className="relative flex justify-center">
+                  <Typography
+                    variant="small"
+                    className="bg-white px-4 text-gray-500"
+                  >
+                    New to Turathna?
+                  </Typography>
+                </div>
+              </div>
+
+              <div className="flex justify-center items-center gap-2">
+                <Typography variant="small" className="text-gray-600">
+                  Dont you have an Account?
+                </Typography>
+                <Link
+                  to="/registration"
+                  className="font-medium text-[#D63A3A] hover:underline flex items-center gap-1"
+                >
+                  Register as a user
+                  
+                </Link>
+              </div>
             </form>
           </CardBody>
         </Card>

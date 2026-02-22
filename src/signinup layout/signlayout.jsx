@@ -3,7 +3,7 @@ import { Routes } from "react-router-dom";
 import { Route } from "react-router-dom";
 import Signup from './pages/signup/signup';
 import Sellerlogin from "./pages/login/Sellerlogin.jsx"
-import Userlogin from "./pages/login/Userlogin.jsx"
+import Userlogin from './pages/login/userlogin.jsx';
 const Signlayout = () => {
     return (
         <div>
