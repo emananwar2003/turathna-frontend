@@ -211,7 +211,7 @@ const Sellerlogin = () => {
                   ليس لديك حساب؟
                 </Typography>
                 <Link
-                  to="/registration"
+                  to="/registration/sellersignup"
                   className="font-medium text-[#D63A3A] hover:underline flex items-center gap-1"
                 >
                   سجل كبائع

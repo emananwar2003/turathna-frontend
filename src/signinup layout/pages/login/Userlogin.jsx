@@ -179,7 +179,7 @@ const Userlogin = () => {
                   Dont you have an Account?
                 </Typography>
                 <Link
-                  to="/registration"
+                  to="/registration/usersignup"
                   className="font-medium text-[#D63A3A] hover:underline flex items-center gap-1"
                 >
                   Register as a user
