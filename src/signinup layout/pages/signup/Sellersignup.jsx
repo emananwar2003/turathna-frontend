@@ -170,56 +170,69 @@ const handleChange = (field, value) => {
   };
 
  
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // ✅ NEW POPUP if any required field is empty
+  if (
+    !form.name.trim() ||
+    !form.phone.trim() ||
+    !form.password.trim() ||
+    !form.confirmPassword.trim() ||
+    (!form.sellingOffline && !form.sellingOnline) ||
+    (form.sellingOffline && !form.shopAddress.trim()) ||
+    (form.sellingOnline && !form.websiteLink.trim()) ||
+    form.uploadedPhotos.length !== 5
+  ) {
+    Swal.fire({
+      icon: "warning",
+      title: "تنبيه",
+      text: "يرجى ملء جميع الحقول المطلوبة قبل التسجيل",
+      confirmButtonColor: "#D63A3A",
+    });
+    return;
+  }
 
-    const errorMessages = [];
+  const errorMessages = [];
 
-    
-    if (Object.values(errors).some((err) => err)) {
-      errorMessages.push("يرجى تصحيح الأخطاء قبل التسجيل");
-    }
+  if (Object.values(errors).some((err) => err)) {
+    errorMessages.push("يرجى تصحيح الأخطاء قبل التسجيل");
+  }
 
-   
-    if (!form.sellingOffline && !form.sellingOnline) {
-      errorMessages.push(
-        "يرجى اختيار طريقة البيع (أونلاين أو أوفلاين أو كليهما)",
-      );
-    }
+  if (!form.sellingOffline && !form.sellingOnline) {
+    errorMessages.push(
+      "يرجى اختيار طريقة البيع (أونلاين أو أوفلاين أو كليهما)",
+    );
+  }
 
-    // Check uploaded photos
-    if (form.uploadedPhotos.length !== 5) {
-      errorMessages.push("يرجى تحميل 5 صور من أعمالك");
-    }
+  if (form.uploadedPhotos.length !== 5) {
+    errorMessages.push("يرجى تحميل 5 صور من أعمالك");
+  }
 
-    
-    errorMessages.forEach((msg) => {
-      speak(msg); 
-      Swal.fire({
-        icon: "error",
-        title: "خطأ",
-        text: msg,
-      });
+  errorMessages.forEach((msg) => {
+    speak(msg);
+    Swal.fire({
+      icon: "error",
+      title: "خطأ",
+      text: msg,
+    });
+  });
+
+  if (errorMessages.length === 0) {
+    const successMsg = "تم التسجيل بنجاح";
+    speak(successMsg);
+    Swal.fire({
+      icon: "success",
+      title: successMsg,
+      text: "تم حفظ بياناتك بنجاح",
+    }).then(() => {
+      navigate("/registration/sellerlogin");
     });
 
-   
-   if (errorMessages.length === 0) {
-     const successMsg = "تم التسجيل بنجاح";
-     speak(successMsg);
-     Swal.fire({
-       icon: "success",
-       title: successMsg,
-       text: "تم حفظ بياناتك بنجاح",
-     }).then(() => {
-       navigate("/registration/sellerlogin"); 
-     });
-
-     console.log("Form submitted:", form);
-     //api hna
-   }
-  };
-
+    console.log("Form submitted:", form);
+    // api hna
+  }
+};
   return (
     <div
       className="min-h-screen w-full relative overflow-hidden bg-[#E5E5E5] flex items-center justify-center p-4"
