@@ -44,6 +44,8 @@ const Sellersignup = () => {
     phone: "",
     password: "",
     confirmPassword: "",
+    shopAddress: "", 
+    websiteLink: "",
     uploadedPhotos: "",
   });
 
@@ -58,22 +60,82 @@ const Sellersignup = () => {
       window.speechSynthesis.speak(utterance);
     }
   };
+const handleChange = (field, value) => {
+  setForm((prev) => ({ ...prev, [field]: value }));
 
-  const handleChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+  let tempErrors = { ...errors };
 
-    let error = "";
-    if (field === "name" && !value.trim()) error = "الاسم مطلوب";
-    if (field === "phone" && !phoneRegex.test(value))
-      error =
+
+  if (field === "name") {
+    const trimmedValue = value.trim();
+    const nameParts = trimmedValue.split(" ").filter((part) => part !== "");
+
+    if (!trimmedValue) tempErrors.name = "الاسم مطلوب";
+    else if (nameParts.length !== 3) tempErrors.name = "يجب إدخال اسم ثلاثي";
+    else if (nameParts.some((part) => part.length < 3))
+      tempErrors.name = "كل اسم يجب أن يكون 3 أحرف على الأقل";
+    else tempErrors.name = "";
+  }
+
+ 
+  if (field === "phone") {
+    if (!value.trim()) tempErrors.phone = "رقم الهاتف مطلوب";
+    else if (!phoneRegex.test(value))
+      tempErrors.phone =
         "رقم الهاتف يجب أن يبدأ بـ 010 أو 011 أو 012 أو 015 ويتكون من 11 رقم";
-    if (field === "password" && value.length < 8)
-      error = "كلمة المرور يجب أن تكون 8 أحرف على الأقل";
-    if (field === "confirmPassword" && value !== form.password)
-      error = "كلمتا المرور غير متطابقتين";
+    else tempErrors.phone = "";
+  }
 
-    setErrors((prev) => ({ ...prev, [field]: error }));
-  };
+ 
+  if (field === "password") {
+    if (!value.trim()) tempErrors.password = "كلمة المرور مطلوبة";
+    else if (value.length < 8)
+      tempErrors.password = "كلمة المرور يجب أن تكون 8 أحرف على الأقل";
+    else tempErrors.password = "";
+  }
+
+
+  if (field === "confirmPassword") {
+    if (!value.trim()) tempErrors.confirmPassword = "تأكيد كلمة المرور مطلوب";
+    else if (value !== form.password)
+      tempErrors.confirmPassword = "كلمتا المرور غير متطابقتين";
+    else tempErrors.confirmPassword = "";
+  }
+
+ 
+  if (field === "shopAddress" || field === "websiteLink") {
+    const updatedAddress = field === "shopAddress" ? value : form.shopAddress;
+    const updatedWebsite = field === "websiteLink" ? value : form.websiteLink;
+
+    if (form.sellingOffline) tempErrors.shopAddress = "";
+    if (form.sellingOnline) tempErrors.websiteLink = "";
+
+  
+    if (form.sellingOffline) {
+      if (!updatedAddress.trim()) {
+        tempErrors.shopAddress = "عنوان المحل مطلوب";
+      } else {
+        tempErrors.shopAddress = "";
+      }
+    }
+
+    
+    if (form.sellingOnline) {
+      if (!updatedWebsite.trim()) {
+        tempErrors.websiteLink = "رابط الموقع مطلوب";
+      } else if (!updatedWebsite.startsWith("https://")) {
+        tempErrors.websiteLink = "الرابط يجب أن يبدأ بـ https://";
+      } else {
+        const httpsRegex = /^https:\/\/.+\..+/;
+        if (!httpsRegex.test(updatedWebsite))
+          tempErrors.websiteLink = "أدخل رابط صحيح مثل https://example.com";
+        else tempErrors.websiteLink = "";
+      }
+    }
+  }
+
+  setErrors(tempErrors);
+};
 
   const handlePhotoUpload = (e) => {
     const files = Array.from(e.target.files).slice(
@@ -179,7 +241,7 @@ const Sellersignup = () => {
             <div className="text-center mb-6">
               <Typography
                 variant="h1"
-                className="text-4xl font-serif mb-2"
+                className="text-5xl font-serif mb-2"
                 style={{ color: "#2B0B0B" }}
               >
                 تراثنا
@@ -233,7 +295,16 @@ const Sellersignup = () => {
                   }`}
                 />
                 {errors.name && (
-                  <p className="text-red-500 text-xs mt-1">{errors.name}</p>
+                  <div className="flex items-center gap-2 mt-1 text-red-500 text-xs">
+                    <p>{errors.name}</p>
+                    <button
+                      type="button"
+                      onClick={() => speak(errors.name)}
+                      className="p-1 rounded-full hover:bg-red-200"
+                    >
+                      <SpeakerWaveIcon className="h-4 w-4" />
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -263,7 +334,16 @@ const Sellersignup = () => {
                   }`}
                 />
                 {errors.phone && (
-                  <p className="text-red-500 text-xs mt-1">{errors.phone}</p>
+                  <div className="flex items-center gap-2 mt-1 text-red-500 text-xs">
+                    <p>{errors.phone}</p>
+                    <button
+                      type="button"
+                      onClick={() => speak(errors.phone)}
+                      className="p-1 rounded-full hover:bg-red-200"
+                    >
+                      <SpeakerWaveIcon className="h-4 w-4" />
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -303,9 +383,16 @@ const Sellersignup = () => {
                   </label>
                 )}
                 {errors.uploadedPhotos && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.uploadedPhotos}
-                  </p>
+                  <div className="flex items-center gap-2 mt-1 text-red-500 text-xs">
+                    <p>{errors.uploadedPhotos}</p>
+                    <button
+                      type="button"
+                      onClick={() => speak(errors.uploadedPhotos)}
+                      className="p-1 rounded-full hover:bg-red-200"
+                    >
+                      <SpeakerWaveIcon className="h-4 w-4" />
+                    </button>
+                  </div>
                 )}
                 {form.uploadedPhotos.length > 0 && (
                   <div className="grid grid-cols-5 gap-2 mt-2">
@@ -349,9 +436,17 @@ const Sellersignup = () => {
                   <div className="flex items-center gap-2">
                     <Checkbox
                       checked={form.sellingOffline}
-                      onChange={(e) =>
-                        setForm({ ...form, sellingOffline: e.target.checked })
-                      }
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setForm((prev) => ({
+                          ...prev,
+                          sellingOffline: checked,
+                        }));
+
+                        if (!checked) {
+                          setErrors((prev) => ({ ...prev, shopAddress: "" }));
+                        }
+                      }}
                       color="red"
                       icon={<ShoppingBagIcon className="h-3 w-3" />}
                     />
@@ -378,9 +473,18 @@ const Sellersignup = () => {
                   <div className="flex items-center gap-2">
                     <Checkbox
                       checked={form.sellingOnline}
-                      onChange={(e) =>
-                        setForm({ ...form, sellingOnline: e.target.checked })
-                      }
+                      onChange={(e) => {
+                        const checked = e.target.checked;
+                        setForm((prev) => ({
+                          ...prev,
+                          sellingOnline: checked,
+                        }));
+
+                        // Clear website link error if unchecked
+                        if (!checked) {
+                          setErrors((prev) => ({ ...prev, websiteLink: "" }));
+                        }
+                      }}
                       color="red"
                       icon={<GlobeAltIcon className="h-3 w-3" />}
                     />
@@ -425,14 +529,25 @@ const Sellersignup = () => {
                     placeholder="أدخل عنوان متجرك"
                     value={form.shopAddress}
                     onChange={(e) =>
-                      setForm({ ...form, shopAddress: e.target.value })
+                      handleChange("shopAddress", e.target.value)
                     }
                     icon={<MapPinIcon className="h-5 w-5" />}
                     className="focus:!border-[#D63A3A] !text-right"
                   />
                 </div>
               )}
-
+              {errors.shopAddress && (
+                <div className="flex items-center gap-2 mt-1 text-red-500 text-sm">
+                  <p>{errors.shopAddress}</p>
+                  <button
+                    type="button"
+                    onClick={() => speak(errors.shopAddress)}
+                    className="p-1 rounded-full hover:bg-red-200"
+                  >
+                    <SpeakerWaveIcon className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
               {/* Conditional: Website Link */}
               {form.sellingOnline && (
                 <div className="animate-[fadeIn_0.3s_ease-in]">
@@ -456,11 +571,23 @@ const Sellersignup = () => {
                     placeholder="https://example.com"
                     value={form.websiteLink}
                     onChange={(e) =>
-                      setForm({ ...form, websiteLink: e.target.value })
+                      handleChange("websiteLink", e.target.value)
                     }
                     icon={<GlobeAltIcon className="h-5 w-5" />}
                     className="focus:!border-[#D63A3A] !text-right"
                   />
+                </div>
+              )}
+              {errors.websiteLink && (
+                <div className="flex items-center gap-2 mt-1 text-red-500 text-sm">
+                  <p>{errors.websiteLink}</p>
+                  <button
+                    type="button"
+                    onClick={() => speak(errors.websiteLink)}
+                    className="p-1 rounded-full hover:bg-red-200"
+                  >
+                    <SpeakerWaveIcon className="h-4 w-4" />
+                  </button>
                 </div>
               )}
 
@@ -501,7 +628,16 @@ const Sellersignup = () => {
                   )}
                 </button>
                 {errors.password && (
-                  <p className="text-red-500 text-xs mt-1">{errors.password}</p>
+                  <div className="flex items-center gap-2 mt-1 text-red-500 text-xs">
+                    <p>{errors.password}</p>
+                    <button
+                      type="button"
+                      onClick={() => speak(errors.password)}
+                      className="p-1 rounded-full hover:bg-red-200"
+                    >
+                      <SpeakerWaveIcon className="h-4 w-4" />
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -546,9 +682,16 @@ const Sellersignup = () => {
                   )}
                 </button>
                 {errors.confirmPassword && (
-                  <p className="text-red-500 text-xs mt-1">
-                    {errors.confirmPassword}
-                  </p>
+                  <div className="flex items-center gap-2 mt-1 text-red-500 text-xs">
+                    <p>{errors.confirmPassword}</p>
+                    <button
+                      type="button"
+                      onClick={() => speak(errors.confirmPassword)}
+                      className="p-1 rounded-full hover:bg-red-200"
+                    >
+                      <SpeakerWaveIcon className="h-4 w-4" />
+                    </button>
+                  </div>
                 )}
               </div>
 
