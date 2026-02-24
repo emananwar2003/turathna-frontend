@@ -383,16 +383,10 @@ const handleChange = (field, value) => {
                   </label>
                 )}
                 {errors.uploadedPhotos && (
-                  <div className="flex items-center gap-2 mt-1 text-red-500 text-xs">
-                    <p>{errors.uploadedPhotos}</p>
-                    <button
-                      type="button"
-                      onClick={() => speak(errors.uploadedPhotos)}
-                      className="p-1 rounded-full hover:bg-red-200"
-                    >
-                      <SpeakerWaveIcon className="h-4 w-4" />
-                    </button>
-                  </div>
+                  <p className="text-red-500 text-xs mt-1">
+                    {" "}
+                    {errors.uploadedPhotos}{" "}
+                  </p>
                 )}
                 {form.uploadedPhotos.length > 0 && (
                   <div className="grid grid-cols-5 gap-2 mt-2">
