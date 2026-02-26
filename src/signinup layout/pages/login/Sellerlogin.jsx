@@ -12,13 +12,19 @@ import {
   EyeSlashIcon,
   SpeakerWaveIcon,
 } from "@heroicons/react/24/outline";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import { useAuth } from "../../../context/Authcontext";
+import { jwtDecode } from "jwt-decode";
+
 const Sellerlogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  let navigate = useNavigate();
+  const { login } = useAuth();
 
   const speakText = (text) => {
     if ("speechSynthesis" in window) {
@@ -49,14 +55,96 @@ const Sellerlogin = () => {
     }
   };
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (!phoneError && !passwordError && phoneNumber && password) {
-      console.log("Login successful");
-    } else {
-      console.log("Login failed: Please check your inputs");
-    }
-  };
+const handleLogin = async (e) => {
+  e.preventDefault();
+   if (!phoneNumber || !password) {
+     const message = "من فضلك أدخل رقم الهاتف وكلمة المرور";
+     Swal.fire({
+       icon: "warning",
+       title: "بيانات ناقصة",
+       text: message,
+     });
+     speakText(message);
+   } else {
+     try {
+       const response = await fetch(
+         "http://localhost:5000/api/v1/user/login/seller",
+         {
+           method: "POST",
+           headers: {
+             "Content-Type": "application/json",
+           },
+           body: JSON.stringify({
+             phone: phoneNumber,
+             password: password,
+           }),
+         },
+       );
+
+       const data = await response.json();
+
+       if (response.status === 401) {
+         const message = "رقم الهاتف أو كلمة المرور غير صحيحة";
+         Swal.fire({
+           icon: "error",
+           title: "بيانات غير صحيحة",
+           text: message,
+         });
+         speakText(message);
+       } else if (
+         response.status === 403 &&
+         data.message.includes("under review")
+       ) {
+         const message = "طلبك ما زال تحت المراجعة، سيتم إشعارك عند القبول";
+         Swal.fire({
+           icon: "warning",
+           title: "الحساب قيد المراجعة",
+           text: message,
+         });
+         speakText(message);
+       } else if (
+         response.status === 403 &&
+         data.message.includes("rejected")
+       ) {
+         const message = "نأسف، تم رفض طلب التسجيل. يمكنك التواصل مع الدعم";
+         Swal.fire({
+           icon: "error",
+           title: "تم رفض الحساب ",
+           text: message,
+         });
+         speakText(message);
+       } else if (response.ok) {
+         const decodedUser = jwtDecode(data.token);
+         login(data.token, decodedUser);
+         
+         const message = "تم تسجيل الدخول بنجاح";
+         Swal.fire({
+           icon: "success",
+           title: message ,
+         });
+         speakText(message);
+
+         navigate("/sellerdashboard/");
+       } else {
+         const message = "حدث خطأ غير متوقع، حاول مرة أخرى";
+         Swal.fire({
+           icon: "error",
+           title: "خطأ",
+           text: message,
+         });
+         speakText(message);
+       }
+     } catch (error) {
+       const message = "تعذر الاتصال بالخادم";
+       Swal.fire({
+         icon: "error",
+         title: "خطأ في الاتصال",
+         text: message,
+       });
+       speakText(message);
+     }
+   }
+};
 
   return (
     <div
