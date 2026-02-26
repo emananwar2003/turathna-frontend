@@ -12,6 +12,10 @@ import {
   EyeSlashIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../context/Authcontext";
+import { jwtDecode } from "jwt-decode";
 const Userlogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
@@ -19,6 +23,8 @@ const Userlogin = () => {
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  let navigate = useNavigate();
+  const { login } = useAuth();
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -37,18 +43,72 @@ const Userlogin = () => {
       setPasswordError("");
     }
   };
+const handleLogin = async (e) => {
+  e.preventDefault();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
+ 
+  if (!email || !password) {
+    Swal.fire({
+      icon: "warning",
+      title: "All fields are required",
+      text: "Please enter both email and password",
+    });
+  } else {
     validateEmail(email);
     validatePassword(password);
 
-    if (!emailError && !passwordError && email && password) {
-      console.log("Login successful");
+    if (emailError || passwordError) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid input",
+        text: "Please check your email and password format",
+      });
     } else {
-      console.log("Login failed: Please check your inputs");
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/v1/user/login/buyer",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ email, password }),
+          },
+        );
+
+        const data = await response.json();
+
+        if (response.ok) {
+          const decodedUser = jwtDecode(data.token);
+        
+
+          login(data.token, decodedUser);
+
+          Swal.fire({
+            icon: "success",
+            title: "Login Successful",
+            text: data.message,
+          }).then(() => {
+            navigate("/");
+          });
+        } else {
+          Swal.fire({
+            icon: "error",
+            title: "Login Failed",
+            text: data.message,
+          });
+        }
+      } catch (error) {
+        Swal.fire({
+          icon: "error",
+          title: "Something went wrong",
+          text: error.message,
+        });
+      }
     }
-  };
+  }
+};
+
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#E5E5E5] p-4 relative">
