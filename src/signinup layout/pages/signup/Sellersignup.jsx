@@ -66,16 +66,24 @@ const handleChange = (field, value) => {
   let tempErrors = { ...errors };
 
 
-  if (field === "name") {
-    const trimmedValue = value.trim();
-    const nameParts = trimmedValue.split(" ").filter((part) => part !== "");
+if (field === "name") {
+  const trimmedValue = value.trim();
+  const nameParts = trimmedValue.split(" ").filter((part) => part !== "");
 
-    if (!trimmedValue) tempErrors.name = "الاسم مطلوب";
-    else if (nameParts.length !== 3) tempErrors.name = "يجب إدخال اسم ثلاثي";
-    else if (nameParts.some((part) => part.length < 3))
-      tempErrors.name = "كل اسم يجب أن يكون 3 أحرف على الأقل";
-    else tempErrors.name = "";
+  const arabicRegex = /^[\u0600-\u06FF]+$/;
+
+  if (!trimmedValue) {
+    tempErrors.name = "الاسم مطلوب";
+  } else if (nameParts.length !== 3) {
+    tempErrors.name = "يجب إدخال اسم ثلاثي";
+  } else if (nameParts.some((part) => part.length < 3)) {
+    tempErrors.name = "كل اسم يجب أن يكون 3 أحرف على الأقل";
+  } else if (nameParts.some((part) => !arabicRegex.test(part))) {
+    tempErrors.name = "الاسم يجب أن يكون باللغة العربية فقط";
+  } else {
+    tempErrors.name = "";
   }
+}
 
  
   if (field === "phone") {
@@ -170,10 +178,9 @@ const handleChange = (field, value) => {
   };
 
  
-const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // ✅ NEW POPUP if any required field is empty
   if (
     !form.name.trim() ||
     !form.phone.trim() ||
@@ -219,18 +226,52 @@ const handleSubmit = (e) => {
   });
 
   if (errorMessages.length === 0) {
-    const successMsg = "تم التسجيل بنجاح";
-    speak(successMsg);
-    Swal.fire({
-      icon: "success",
-      title: successMsg,
-      text: "تم حفظ بياناتك بنجاح",
-    }).then(() => {
-      navigate("/registration/sellerlogin");
-    });
+    try {
+      const formData = new FormData();
 
-    console.log("Form submitted:", form);
-    // api hna
+      formData.append("name", form.name);
+      formData.append("phone", form.phone);
+      formData.append("password", form.password);
+      formData.append("sellingOffline", form.sellingOffline);
+      formData.append("sellingOnline", form.sellingOnline);
+      formData.append("shopAddress", form.shopAddress);
+      formData.append("websiteLink", form.websiteLink);
+
+      form.uploadedPhotos.forEach((file) => {
+        formData.append("uploadedPhotos", file);
+      });
+
+      const response = await fetch(
+        "http://localhost:5000/api/v1/user/register/seller",
+        {
+          method: "POST",
+          body: formData,
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message);
+      }
+
+      
+      speak("حسابك تم ارسال طلبك حسابك قيد المراجعة");
+      Swal.fire({
+        icon: "success",
+        title: "تم إرسال الطلب",
+        text: "حسابك قيد المراجعة",
+        confirmButtonColor: "#D63A3A",
+      }).then(() => {
+        navigate("/registration/sellerlogin");
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "خطأ",
+        text: error.message || "حدث خطأ أثناء إرسال البيانات",
+      });
+    }
   }
 };
   return (

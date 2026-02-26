@@ -95,40 +95,83 @@ const Usersignup = () => {
     setErrors(tempErrors);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
 
-    if (Object.values(errors).some((err) => err)) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "Please fix the errors before submitting",
-      });
-      return;
-    }
 
-    if (Object.values(form).some((value) => !value)) {
-      Swal.fire({
-        icon: "error",
-        title: "Error",
-        text: "All fields are required",
-      });
-      return;
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
+  let canSubmit = true;
+
+
+  if (Object.values(errors).some((err) => err)) {
     Swal.fire({
-      icon: "success",
-      title: "Registration Successful",
-      text: "Your account has been created successfully",
-    }).then(() => {
-      navigate("/registration/userlogin");
+      icon: "error",
+      title: "Error",
+      text: "Please fix the errors before submitting",
     });
+    canSubmit = false;
+  }
 
-    console.log("User Form:", form);
+  if (Object.values(form).some((value) => !value)) {
+    Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "All fields are required",
+    });
+    canSubmit = false;
+  }
 
-    // Add your API call here to submit the form
-  };
+  if (canSubmit) {
+    try {
+      // Map frontend keys to backend schema
+      const backendForm = {
+        firstname: form.firstName,
+        lastname: form.lastName,
+        email: form.email,
+        password: form.password,
+        phone: form.phone,
+      };
 
+      const response = await fetch(
+        "http://localhost:5000/api/v1/user/register/buyer",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(backendForm),
+        },
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        Swal.fire({
+          icon: "success",
+          title: "Registration Successful",
+          text: "You have registered successfully!",
+        }).then(() => {
+          navigate("/registration/userlogin");
+        });
+      } else {
+        
+        Swal.fire({
+          icon: "error",
+          title: "Registration Failed",
+          text:  "Something went wrong. Please try again.",
+        });
+        console.error("Registration Error:", data);
+      }
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Registration Failed",
+        text: "Something went wrong. Please try again.",
+      });
+      console.error("Registration Error:", error);
+    }
+  }
+};
   return (
     <div
       className="min-h-screen w-full relative overflow-hidden bg-[#E5E5E5] flex items-center justify-center p-4"
