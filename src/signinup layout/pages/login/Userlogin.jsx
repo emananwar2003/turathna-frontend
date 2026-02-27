@@ -46,7 +46,6 @@ const Userlogin = () => {
 const handleLogin = async (e) => {
   e.preventDefault();
 
- 
   if (!email || !password) {
     Swal.fire({
       icon: "warning",
@@ -80,7 +79,6 @@ const handleLogin = async (e) => {
 
         if (response.ok) {
           const decodedUser = jwtDecode(data.token);
-        
 
           login(data.token, decodedUser);
 
@@ -89,13 +87,18 @@ const handleLogin = async (e) => {
             title: "Login Successful",
             text: data.message,
           }).then(() => {
-            navigate("/");
+            if (decodedUser.role === "admin") {
+              navigate("/admindashboard/");
+            } else {
+              navigate("/");
+            }
           });
         } else {
           Swal.fire({
             icon: "error",
             title: "Login Failed",
             text: data.message,
+           
           });
         }
       } catch (error) {
@@ -108,7 +111,6 @@ const handleLogin = async (e) => {
     }
   }
 };
-
 
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-[#E5E5E5] p-4 relative">
