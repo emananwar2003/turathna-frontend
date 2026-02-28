@@ -173,13 +173,13 @@ const handleSubmit = async (e) => {
           title: "Registration Failed",
           text:  "Something went wrong. Please try again.",
         });
-        console.error("Registration Error:", data);
+        
       }
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Registration Failed",
-        text: "Something went wrong. Please try again.",
+        text: error.message || "Something went wrong. Please try again.",
       });
       console.error("Registration Error:", error);
     }
