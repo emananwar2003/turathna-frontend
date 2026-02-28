@@ -171,7 +171,10 @@ const handleSubmit = async (e) => {
         Swal.fire({
           icon: "error",
           title: "Registration Failed",
-          text:  "Something went wrong. Please try again.",
+          text:
+            data.message ||
+            data.error ||
+            "Something went wrong. Please try again.",
         });
         
       }
@@ -179,7 +182,7 @@ const handleSubmit = async (e) => {
       Swal.fire({
         icon: "error",
         title: "Registration Failed",
-        text: error.message || "Something went wrong. Please try again.",
+        text: data.message || data.error || "Something went wrong. Please try again.",
       });
       console.error("Registration Error:", error);
     }
