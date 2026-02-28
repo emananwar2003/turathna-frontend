@@ -47,20 +47,33 @@ const Usersignup = () => {
   const handleChange = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
     let tempErrors = { ...errors };
+if (field === "firstName") {
+  const trimmedValue = value.trim();
 
-    if (field === "firstName") {
-      if (!value.trim()) tempErrors.firstName = "First name is required";
-      else if (value.trim().length < 3)
-        tempErrors.firstName = "First name must be at least 3 letters";
-      else tempErrors.firstName = "";
-    }
+  if (!trimmedValue) {
+    tempErrors.firstName = "First name is required";
+  } else if (trimmedValue.length < 3) {
+    tempErrors.firstName = "First name must be at least 3 letters";
+  } else if (!/^[A-Z]/.test(trimmedValue)) {
+    tempErrors.firstName = "First letter must be capital";
+  } else {
+    tempErrors.firstName = "";
+  }
+}
 
-    if (field === "lastName") {
-      if (!value.trim()) tempErrors.lastName = "Last name is required";
-      else if (value.trim().length < 3)
-        tempErrors.lastName = "Last name must be at least 3 letters";
-      else tempErrors.lastName = "";
-    }
+if (field === "lastName") {
+  const trimmedValue = value.trim();
+
+  if (!trimmedValue) {
+    tempErrors.lastName = "Last name is required";
+  } else if (trimmedValue.length < 3) {
+    tempErrors.lastName = "Last name must be at least 3 letters";
+  } else if (!/^[A-Z]/.test(trimmedValue)) {
+    tempErrors.lastName = "First letter must be capital";
+  } else {
+    tempErrors.lastName = "";
+  }
+}
 
     if (field === "email") {
       if (!value.trim()) tempErrors.email = "Email is required";
@@ -160,13 +173,13 @@ const handleSubmit = async (e) => {
           title: "Registration Failed",
           text:  "Something went wrong. Please try again.",
         });
-        console.error("Registration Error:", data);
+        
       }
     } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Registration Failed",
-        text: "Something went wrong. Please try again.",
+        text: error.message || "Something went wrong. Please try again.",
       });
       console.error("Registration Error:", error);
     }
