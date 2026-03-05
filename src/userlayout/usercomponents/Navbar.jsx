@@ -23,6 +23,7 @@ import {
 
 import { Avatar } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
+
 import {
   Squares2X2Icon,
   SwatchIcon,
@@ -34,7 +35,8 @@ import {
   GiftIcon,
   PaintBrushIcon,
 } from "@heroicons/react/24/solid";
-
+import { useAuth } from "../../context/Authcontext";
+import ProfileMenu from "./ProfileMenu";
 const navListMenuItems = [
   {
     title: "All Products",
@@ -86,6 +88,8 @@ const Navbars = () => {
   const [openNav, setOpenNav] = React.useState(false);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+  const { token, loading } = useAuth();
+
 
   const navigate = useNavigate();
 
@@ -231,13 +235,17 @@ const Navbars = () => {
               </ListItem>
             </List>
 
-            <Button
-              variant="text"
-              className="text-2xl text-[#EEEEEE]"
-              onClick={handleClick}
-            >
-              <CiLogin />
-            </Button>
+            {!loading && token ? (
+              <ProfileMenu />
+            ) : (
+              <Button
+                variant="text"
+                className="text-2xl text-[#EEEEEE]"
+                onClick={handleClick}
+              >
+                <CiLogin />
+              </Button>
+            )}
           </div>
 
           {/* Mobile Button */}
@@ -283,13 +291,17 @@ const Navbars = () => {
           </List>
 
           <div className="flex gap-2 mt-4">
-            <Button
-              variant="text"
-              className="text-2xl text-[#EEEEEE]"
-              onClick={handleClick}
-            >
-              <CiLogin />
-            </Button>
+            {!loading && token ? (
+              <ProfileMenu />
+            ) : (
+              <Button
+                variant="text"
+                className="text-2xl text-[#EEEEEE]"
+                onClick={handleClick}
+              >
+                <CiLogin />
+              </Button>
+            )}
           </div>
         </Collapse>
       </Navbar>

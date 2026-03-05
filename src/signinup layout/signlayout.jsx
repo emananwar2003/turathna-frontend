@@ -5,6 +5,7 @@ import Sellerlogin from "./pages/login/Sellerlogin.jsx"
 import Userlogin from './pages/login/userlogin.jsx';
 import Usersignup from './pages/signup/Usersignup.jsx';
 import Sellersignup from './pages/signup/Sellersignup.jsx';
+import Editprofile from './pages/editprofile/Editprofile.jsx';
 
 const Signlayout = () => {
     return (
@@ -13,7 +14,8 @@ const Signlayout = () => {
           <Route path="userlogin" element={<Userlogin />} />
           <Route path="sellerlogin" element={<Sellerlogin />} />
           <Route path="sellersignup" element={<Sellersignup />} />
-          <Route path="usersignup" element={<Usersignup/>} />
+          <Route path="usersignup" element={<Usersignup />} />
+          <Route path='editprofile' element={<Editprofile/>}/>
         </Routes>
       </div>
     );
