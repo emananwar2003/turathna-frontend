@@ -12,6 +12,7 @@ import Workshops from './pages/workshops/Workshops';
 import Workdetails from './pages/workshopsdetail/Workdetails';
 import Products from './pages/products/Products';
 import Navbars from "./usercomponents/Navbar";
+import Region from './pages/region/Region';
 
 const Userlayout = () => {
     return (
@@ -27,7 +28,8 @@ const Userlayout = () => {
                 <Route path="cart" element={<Cart/>} />
                 <Route path="checkout" element={<Checkout/>} />
                 <Route path="workshops" element={<Workshops/>} />
-                <Route path="workshopdet/:id" element={<Workdetails/>} />
+                <Route path="workshopdet/:id" element={<Workdetails />} />
+                <Route path='region/:region' element={<Region/>}/>
                 <Route path="*" element={<Notfund/>} />
             </Routes>
 

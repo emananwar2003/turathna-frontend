@@ -4,6 +4,7 @@ import { Route } from "react-router-dom";
 import Dashboard from './pages/Dashboard';
 import Addproducts from './pages/Addproducts';
 import Navbars from '../userlayout/usercomponents/Navbar';
+import Footer from "../userlayout/usercomponents/Footer";
 const Sellerlayout = () => {
   return (
     <div>
@@ -12,6 +13,7 @@ const Sellerlayout = () => {
               <Route index element={<Dashboard />} />
               <Route path='addproduct' element={<Addproducts/>} />
       </Routes>
+      <Footer/>
     </div>
   );
 }
