@@ -15,7 +15,7 @@ const Signlayout = () => {
           <Route path="sellerlogin" element={<Sellerlogin />} />
           <Route path="sellersignup" element={<Sellersignup />} />
           <Route path="usersignup" element={<Usersignup />} />
-          <Route path='editprofile' element={<Editprofile/>}/>
+          <Route path="editprofile/:id" element={<Editprofile />} />
         </Routes>
       </div>
     );

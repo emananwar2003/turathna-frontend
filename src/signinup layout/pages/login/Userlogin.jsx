@@ -85,7 +85,7 @@ const handleLogin = async (e) => {
           Swal.fire({
             icon: "success",
             title: "Login Successful",
-            text: data.message,
+            text: "you have logged in successfully",
           }).then(() => {
             if (decodedUser.role === "admin") {
               navigate("/admindashboard/");

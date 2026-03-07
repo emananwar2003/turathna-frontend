@@ -5,18 +5,26 @@ import {
   MenuList,
   MenuItem,
   Typography,
-  IconButton,
+  Button,
 } from "@material-tailwind/react";
-import { UserCircleIcon } from "@heroicons/react/24/solid";
+import {
+  UserCircleIcon,
+  SpeakerWaveIcon,
+  Cog6ToothIcon,
+  PowerIcon,
+} from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/Authcontext";
 
-const ProfileMenu = () => {
+const UserProfileMenu = () => {
   const { userinfo, logout } = useAuth();
   const navigate = useNavigate();
 
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const role = userinfo?.role;
+  const userId = userinfo?.userId;
 
+  // Speech synthesis
   const speak = (text) => {
     const speech = new SpeechSynthesisUtterance(text);
     speech.lang = "ar-EG";
@@ -26,31 +34,33 @@ const ProfileMenu = () => {
   };
 
   const Speaker = ({ text }) => (
-    <span
+    <SpeakerWaveIcon
+      className="h-5 w-5 cursor-pointer text-blue-500"
       onClick={(e) => {
         e.stopPropagation();
         speak(text);
       }}
-      className="cursor-pointer text-sm"
-    >
-      🔊
-    </span>
+    />
   );
 
+  // Role-based menu
   const buyerMenu = [
     { label: "My Reservations", path: "/reservasions" },
     { label: "Cart", path: "/cart" },
-    { label: "Edit Profile", path: "/registration/editprofile" },
+    { label: "Edit Profile", path: `/registration/editprofile/${userId}` },
   ];
 
   const adminMenu = [
     { label: "Dashboard", path: "/admindashboard/" },
-    { label: "Edit Profile", path: "/registration/editprofile" },
+    { label: "Edit Profile", path: `/registration/editprofile/${userId}` },
   ];
 
   const sellerMenu = [
     { label: "لوحة التحكم", path: "/sellerdashboard/" },
-    { label: "تعديل الملف الشخصي", path: "/registration/editprofile" },
+    {
+      label: "تعديل الملف الشخصي",
+      path: `/registration/editprofile/${userId}`,
+    },
   ];
 
   let menuItems = [];
@@ -61,22 +71,22 @@ const ProfileMenu = () => {
   const logoutLabel = role === "seller" ? "تسجيل الخروج" : "Logout";
 
   return (
-    <Menu>
+    <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom-end">
       <MenuHandler>
-        <IconButton variant="text">
-          <UserCircleIcon className="h-10 w-15 text-white  text-5xl" />
-        </IconButton>
+        <Button
+          variant="text"
+          color="blue-gray"
+          className="flex items-center rounded-full p-0"
+        >
+          <UserCircleIcon className="h-14 w-14 text-white p-1 border-2 border-white rounded-full shadow-lg hover:shadow-xl" />
+        </Button>
       </MenuHandler>
 
-      <MenuList
-        className={`${
-          role === "seller" ? "text-right font-serif" : "text-left"
-        }`}
-      >
-        {menuItems.map((item, index) => (
+      <MenuList className="p-1">
+        {menuItems.map((item) => (
           <MenuItem
-            key={index}
-            className="flex items-center justify-between"
+            key={item.label}
+            className="flex items-center justify-between gap-2"
             onClick={() => navigate(item.path)}
           >
             {role === "seller" && <Speaker text={item.label} />}
@@ -89,7 +99,7 @@ const ProfileMenu = () => {
         <hr className="my-2 border-blue-gray-50" />
 
         <MenuItem
-          className="flex items-center justify-between text-red-600"
+          className="flex items-center justify-between gap-2 text-red-600"
           onClick={() => {
             logout();
             navigate("/");
@@ -105,4 +115,4 @@ const ProfileMenu = () => {
   );
 };
 
-export default ProfileMenu;
+export default UserProfileMenu;
