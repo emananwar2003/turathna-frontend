@@ -38,7 +38,7 @@ const ProfileMenu = () => {
   );
 
   const buyerMenu = [
-    { label: "My Reservations", path: "/reservations" },
+    { label: "My Reservations", path: "/reservasions" },
     { label: "Cart", path: "/cart" },
     { label: "Edit Profile", path: "/registration/editprofile" },
   ];
