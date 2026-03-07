@@ -2,7 +2,7 @@ import React from 'react'
 import { Routes } from "react-router-dom";
 import { Route } from "react-router-dom";
 import Sellerlogin from "./pages/login/Sellerlogin.jsx"
-import Userlogin from './pages/login/userlogin.jsx';
+import Userlogin from './pages/login/Userlogin.jsx';
 import Usersignup from './pages/signup/Usersignup.jsx';
 import Sellersignup from './pages/signup/Sellersignup.jsx';
 import Editprofile from './pages/editprofile/Editprofile.jsx';
