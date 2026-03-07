@@ -40,7 +40,7 @@ const Admindashboard = () => {
             <CardBody className="flex flex-col gap-4">
               {/* Logo Avatar */}
               <Avatar
-                src="/logo.jpg~"
+                src="/logo.jpg"
                 alt="logo"
                 size="lg"
                 className="rounded-full border border-[#D84040]"
