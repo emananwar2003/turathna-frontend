@@ -13,28 +13,29 @@ import Workdetails from './pages/workshopsdetail/Workdetails';
 import Products from './pages/products/Products';
 import Navbars from "./usercomponents/Navbar";
 import Region from './pages/region/Region';
+import Reservasion from './pages/myreservasions/Reservasion';
 
 const Userlayout = () => {
     return (
-        <div>
-            <Navbars />
+      <div>
+        <Navbars />
 
-            <Routes>
-                <Route index element={<Home />} />
-                <Route path="products" element={<Products/>} />
-                <Route path="details/:id" element={<Productdetail/>} />
-                <Route path="category/:category" element={<Category/>} />
-                <Route path="about" element={<About/>} />
-                <Route path="cart" element={<Cart/>} />
-                <Route path="checkout" element={<Checkout/>} />
-                <Route path="workshops" element={<Workshops/>} />
-                <Route path="workshopdet/:id" element={<Workdetails />} />
-                <Route path='region/:region' element={<Region/>}/>
-                <Route path="*" element={<Notfund/>} />
-            </Routes>
-
-        </div>
-    )
+        <Routes>
+          <Route index element={<Home />} />
+          <Route path="products" element={<Products />} />
+          <Route path="details/:id" element={<Productdetail />} />
+          <Route path="category/:category" element={<Category />} />
+          <Route path="about" element={<About />} />
+          <Route path="cart" element={<Cart />} />
+          <Route path="checkout" element={<Checkout />} />
+          <Route path="workshops" element={<Workshops />} />
+          <Route path="workshopdet/:id" element={<Workdetails />} />
+          <Route path="region/:region" element={<Region />} />
+          <Route path="reservasions" element={<Reservasion />} />
+          <Route path="*" element={<Notfund />} />
+        </Routes>
+      </div>
+    );
 }
 
 export default Userlayout
