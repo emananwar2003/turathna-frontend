@@ -14,7 +14,7 @@ import Products from './pages/products/Products';
 import Navbars from "./usercomponents/Navbar";
 import Region from './pages/region/Region';
 import Reservasion from './pages/myreservasions/Reservasion';
-
+import Footer from "./usercomponents/Footer";
 const Userlayout = () => {
     return (
       <div>
@@ -34,6 +34,7 @@ const Userlayout = () => {
           <Route path="reservasions" element={<Reservasion />} />
           <Route path="*" element={<Notfund />} />
         </Routes>
+        <Footer/>
       </div>
     );
 }
