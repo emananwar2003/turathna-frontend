@@ -7,56 +7,56 @@ const categories = [
     name: "Textiles & Embroidery",
     description: "Handwoven fabrics, kilims, and Sinai embroidery.",
     image:
-      "https://images.unsplash.com/photo-1603252109303-2751441dd157?q=80&w=1200",
+      "/firstcat.jpeg",
   },
   {
     id: 2,
     name: "Pottery & Ceramics",
     description: "Traditional handmade pottery and decorative ceramics.",
     image:
-      "https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?q=80&w=1200",
+      "/seccat.jpeg",
   },
   {
     id: 3,
     name: "Jewelry & Accessories",
     description: "Silver, copper, and heritage-inspired accessories.",
     image:
-      "https://images.unsplash.com/photo-1617038220319-276d3cfab638?q=80&w=1200",
+      "/thirdcat.jpeg",
   },
   {
     id: 4,
     name: "Home Décor",
     description: "Authentic Egyptian decorative pieces.",
     image:
-      "https://images.unsplash.com/photo-1616627451515-cbc80e5ece35?q=80&w=1200",
+      "/forthcat.jpeg",
   },
   {
     id: 5,
     name: "Bags & Leather Goods",
     description: "Handcrafted leather bags and accessories.",
     image:
-      "https://images.unsplash.com/photo-1590874103328-eac38a683ce7?q=80&w=1200",
+      "/leather.jpeg",
   },
   {
     id: 6,
     name: "Wood & Carved Art",
     description: "Hand-carved wooden crafts and ornaments.",
     image:
-      "https://images.unsplash.com/photo-1610701596007-11502861dcfa?q=80&w=1200",
+      "/sixcat.jpeg",
   },
   {
     id: 7,
     name: "Handmade Gifts",
     description: "Unique gift items crafted by local artisans.",
     image:
-      "https://images.unsplash.com/photo-1512909006721-3d6018887383?q=80&w=1200",
+      "/sevencat.jpeg",
   },
   {
     id: 8,
     name: "Art & Paintings",
     description: "Cultural paintings and handcrafted artwork.",
     image:
-      "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1200",
+      "/lastcat.jpeg",
   },
 ];
 
