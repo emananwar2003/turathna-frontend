@@ -1,11 +1,11 @@
 import React from 'react'
 
-const admincomp = () => {
+const Sellerdets = () => {
   return (
     <div>
-      
+      dets
     </div>
   )
 }
 
-export default admincomp
+export default Sellerdets
