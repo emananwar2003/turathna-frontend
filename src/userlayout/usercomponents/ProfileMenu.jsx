@@ -78,7 +78,7 @@ const UserProfileMenu = () => {
           color="blue-gray"
           className="flex items-center rounded-full p-0"
         >
-          <UserCircleIcon className="h-14 w-14 text-white p-1 border-2 border-white rounded-full shadow-lg hover:shadow-xl" />
+          <UserCircleIcon className="h-16 w-16 text-white p-1 border-2 border-white rounded-full shadow-lg hover:shadow-xl" />
         </Button>
       </MenuHandler>
 
