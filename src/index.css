@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Hide Google translate bar */
+body > .skiptranslate {
+  display: none !important;
+}
+
+/* Hide translate iframe */
+.goog-te-banner-frame.skiptranslate {
+  display: none !important;
+}
+
+/* Remove the top space it adds */
+body {
+  top: 0px !important;
+}
+
+/* Remove highlight when translating */
+.goog-text-highlight {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+

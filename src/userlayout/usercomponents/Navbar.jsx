@@ -20,7 +20,6 @@ import {
   Bars3Icon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-
 import { Avatar } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 
@@ -37,6 +36,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { useAuth } from "../../context/Authcontext";
 import ProfileMenu from "./ProfileMenu";
+import LanguageSwitcher from "./LanguageSwitcher";
 const navListMenuItems = [
   {
     title: "All Products",
@@ -234,7 +234,7 @@ const Navbars = () => {
                 </Link>
               </ListItem>
             </List>
-
+            <LanguageSwitcher />
             {!loading && token ? (
               <ProfileMenu />
             ) : (
@@ -289,6 +289,7 @@ const Navbars = () => {
               </Link>
             </ListItem>
           </List>
+          <LanguageSwitcher />
 
           <div className="flex gap-2 mt-4">
             {!loading && token ? (
