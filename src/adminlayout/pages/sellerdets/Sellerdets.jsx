@@ -165,11 +165,16 @@ const Sellerdets = () => {
                 <label className="text-sm text-[#2B0B0B] mb-2 block">
                   Portfolio Photos
                 </label>
+
                 {form.uploadedPhotos.length > 0 && (
                   <div className="grid grid-cols-5 gap-2 mt-2">
                     {form.uploadedPhotos.map((photo, i) => {
                       const cleanPath = photo.replace(/\\/g, "/");
-                      const photoURL = `http://localhost:5000/${cleanPath}`;
+
+                      const photoURL = cleanPath.startsWith("http")
+                        ? cleanPath
+                        : `http://localhost:5000/${cleanPath}`;
+
                       return (
                         <a
                           key={i}
