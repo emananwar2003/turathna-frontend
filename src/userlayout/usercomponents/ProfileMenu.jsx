@@ -24,7 +24,7 @@ const UserProfileMenu = () => {
   const role = userinfo?.role;
   const userId = userinfo?.userId;
 
-  // Speech synthesis
+
   const speak = (text) => {
     const speech = new SpeechSynthesisUtterance(text);
     speech.lang = "ar-EG";
@@ -43,11 +43,11 @@ const UserProfileMenu = () => {
     />
   );
 
-  // Role-based menu
   const buyerMenu = [
     { label: "My Reservations", path: "/reservasions" },
     { label: "Cart", path: "/cart" },
     { label: "Edit Profile", path: `/registration/editprofile/${userId}` },
+    { label: "My Orders", path: "/buyerorders" },
   ];
 
   const adminMenu = [

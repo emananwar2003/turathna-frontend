@@ -15,6 +15,8 @@ import Navbars from "./usercomponents/Navbar";
 import Region from './pages/region/Region';
 import Reservasion from './pages/myreservasions/Reservasion';
 import Footer from "./usercomponents/Footer";
+import Buyerorders from './pages/myordersbuyer/Buyerorders';
+
 const Userlayout = () => {
     return (
       <div>
@@ -32,6 +34,7 @@ const Userlayout = () => {
           <Route path="workshopdet/:id" element={<Workdetails />} />
           <Route path="region/:region" element={<Region />} />
           <Route path="reservasions" element={<Reservasion />} />
+          <Route path='buyerorders' element={<Buyerorders/>}/>
           <Route path="*" element={<Notfund />} />
         </Routes>
         <Footer/>

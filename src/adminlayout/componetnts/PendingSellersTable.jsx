@@ -41,7 +41,8 @@ export default function PendingSellersTable() {
         }
 
         const data = await res.json();
-        setSellers(data);
+        setSellers(data.data.sellersList);
+        
       } catch (err) {
         setError(err.message || "Failed to fetch sellers");
         setSellers([]);

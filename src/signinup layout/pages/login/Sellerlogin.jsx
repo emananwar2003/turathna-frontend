@@ -96,11 +96,16 @@ const handleLogin = async (e) => {
          data.message.includes("under review")
        ) {
          const message = "طلبك ما زال تحت المراجعة، سيتم إشعارك عند القبول";
-         Swal.fire({
-           icon: "warning",
-           title: "الحساب قيد المراجعة",
-           text: message,
-         });
+          Swal.fire({
+            icon: "warning",
+            title: "الحساب قيد المراجعة",
+            text: message,
+            confirmButtonText: "OK",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              navigate("/"); 
+            }
+          });
          speakText(message);
        } else if (
          response.status === 403 &&
@@ -109,8 +114,13 @@ const handleLogin = async (e) => {
          const message = "نأسف، تم رفض طلب التسجيل. يمكنك التواصل مع الدعم";
          Swal.fire({
            icon: "error",
-           title: "تم رفض الحساب ",
+           title: "تم رفض الحساب",
            text: message,
+           confirmButtonText: "OK",
+         }).then((result) => {
+           if (result.isConfirmed) {
+             navigate("/"); 
+           }
          });
          speakText(message);
        } else if (response.ok) {
