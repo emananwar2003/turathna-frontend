@@ -16,9 +16,9 @@ const actions = [
     route: "/sellerdashboard/addproduct",
   },
   {
-    title: "تعديل المنتجات",
+    title: " رؤية جميع منتجاتي",
     description: "قم بتعديل أو تحديث المنتجات الموجودة.",
-    route: "/sellerdashboard/editproduct",
+    route: "/sellerdashboard/seemyproducts",
   },
 ];
 
