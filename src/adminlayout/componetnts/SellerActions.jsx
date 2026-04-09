@@ -39,7 +39,7 @@ const SellerActions = () => {
         {
           method: "PATCH",
           headers: {
-            Authorization: token, // no Bearer
+            Authorization: token, 
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ verificationStatus }),
