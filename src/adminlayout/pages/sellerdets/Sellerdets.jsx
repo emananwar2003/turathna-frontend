@@ -50,7 +50,7 @@ const Sellerdets = () => {
           `http://localhost:5000/api/v1/admin/seller/${id}`,
           {
             headers: {
-              Authorization: token, // token without "Bearer"
+              Authorization: token, 
               "Content-Type": "application/json",
             },
           },

@@ -4,21 +4,21 @@ import { Route } from "react-router-dom";
 import Dashboard from './pages/Dashboard';
 import Addproducts from './pages/Addproducts';
 import Navbars from '../userlayout/usercomponents/Navbar';
-import Editproducts from './pages/editproducts/Editproducts';
-import Seemyproducts from './pages/seemyproducts/seemyproducts';
+import SellerProductList  from './pages/seemyproducts/SellerProductList';
+import EditProduct from './pages/editproducts/Editproduct';
+
 
 
 const Sellerlayout = () => {
   return (
     <div>
-      <Navbars/>
+      <Navbars />
       <Routes>
-              <Route index element={<Dashboard />} />
-        <Route path='addproduct' element={<Addproducts />} />
-        <Route path='editproducts' element={<Editproducts />} />
-        <Route path='seemyproducts' element={<Seemyproducts/>}/>
+        <Route index element={<Dashboard />} />
+        <Route path="addproduct" element={<Addproducts />} />
+        <Route path="editproduct/:productId" element={<EditProduct />} />
+        <Route path="seemyproducts" element={<SellerProductList />} />
       </Routes>
-      
     </div>
   );
 }
