@@ -27,8 +27,8 @@ const EditProduct = () => {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
-    newPhotos: [], 
-    existingImages: [], 
+    newPhotos: [],
+    existingImages: [],
     title: "",
     description: "",
     price: "",
@@ -66,9 +66,7 @@ const EditProduct = () => {
           { headers: { Authorization: token } },
         );
         const data = await res.json();
-    
 
-        
         const p =
           data?.data?.product ||
           data?.data?.products?.[0] ||
@@ -76,14 +74,14 @@ const EditProduct = () => {
           data?.data ||
           data ||
           {};
-        
+
         setForm((prev) => ({
           ...prev,
           existingImages: p.productImages || [],
           title: p.title_ar || "",
           description: p.description_ar || "",
           price: String(p.originalPrice || ""),
-          
+
           region: p.region?.slugName || "",
         }));
       } catch {
@@ -99,7 +97,6 @@ const EditProduct = () => {
     };
     fetchProduct();
   }, [productId]);
-
 
   const validate = (field, value) => {
     let msg = "";
@@ -153,7 +150,6 @@ const EditProduct = () => {
   };
 
   const handleSubmit = async () => {
-  
     const newErrors = {
       title: validate("title", form.title),
       description: validate("description", form.description),
@@ -198,14 +194,12 @@ const EditProduct = () => {
       formData.append("description_ar", form.description);
       formData.append("originalPrice", form.price);
       formData.append("region", form.region);
-        for (const url of form.existingImages) {
-          const blob = await (await fetch(url)).blob();
-          formData.append("productImages", blob, url.split("/").pop());
-        }
+      for (const url of form.existingImages) {
+        const blob = await (await fetch(url)).blob();
+        formData.append("productImages", blob, url.split("/").pop());
+      }
 
-        form.newPhotos.forEach((file) =>
-          formData.append("productImages", file),
-        );
+      form.newPhotos.forEach((file) => formData.append("productImages", file));
 
       const res = await fetch(
         `http://localhost:5000/api/v1/product/seller/${sellerId}/${productId}`,
@@ -215,7 +209,6 @@ const EditProduct = () => {
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err?.message || "حدث خطأ");
-      
       }
 
       const msg = "تم حفظ التغييرات بنجاح";
