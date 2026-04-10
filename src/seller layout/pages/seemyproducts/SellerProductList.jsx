@@ -38,7 +38,7 @@ const ProductCard = ({ product, onDelete }) => {
       icon: <ClockIcon className="h-4 w-4" />,
       message: "منتجك قيد التقييم من قِبَل الإدارة، يرجى الانتظار.",
     },
-    accepted: {
+    approved: {
       label: "مقبول",
       color: "green",
       icon: <CheckCircleIcon className="h-4 w-4" />,
@@ -60,7 +60,7 @@ const ProductCard = ({ product, onDelete }) => {
   const handleStatusClick = () => {
     Swal.fire({
       icon:
-        product.verificationStatus === "accepted"
+        product.verificationStatus === "approved"
           ? "success"
           : product.verificationStatus === "rejected"
             ? "error"
@@ -143,7 +143,7 @@ const ProductCard = ({ product, onDelete }) => {
                 >
                   <ChevronRightIcon className="h-4 w-4" />
                 </button>
-                {/* Dots */}
+                
                 <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1.5">
                   {images.map((_, i) => (
                     <button
@@ -186,7 +186,7 @@ const ProductCard = ({ product, onDelete }) => {
         >
           <span
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold font-[Tajawal] transition-all duration-200 group-hover:scale-105 ${
-              product.verificationStatus === "accepted"
+              product.verificationStatus === "approved"
                 ? "bg-green-100 text-green-800 border border-green-300"
                 : product.verificationStatus === "rejected"
                   ? "bg-red-100 text-[#D84040] border border-[#D84040]/40"
