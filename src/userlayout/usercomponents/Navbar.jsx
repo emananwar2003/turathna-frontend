@@ -44,17 +44,17 @@ const navListMenuItems = [
     icon: Squares2X2Icon,
   },
   {
-    title: "Textiles & Embroidery",
+    title: "textiles and embroidery",
     description: "Handwoven fabrics, kilims, and Sinai embroidery.",
     icon: SwatchIcon,
   },
   {
-    title: "Pottery & Ceramics",
+    title: "pottery and ceramics",
     description: "Traditional handmade pottery and decorative ceramics.",
     icon: CubeIcon,
   },
   {
-    title: "Jewelry & Accessories",
+    title: "jewelry and accessories",
     description: "Silver, copper, and heritage-inspired accessories.",
     icon: SparklesIcon,
   },
@@ -64,12 +64,12 @@ const navListMenuItems = [
     icon: HomeIcon,
   },
   {
-    title: "Bags & Leather Goods",
+    title: "bags and leather goods",
     description: "Handcrafted leather bags and accessories.",
     icon: ShoppingBagIcon,
   },
   {
-    title: "Wood & Carved Art",
+    title: "wood and carved-art",
     description: "Hand-carved wooden crafts and ornaments.",
     icon: FireIcon,
   },
@@ -79,7 +79,7 @@ const navListMenuItems = [
     icon: GiftIcon,
   },
   {
-    title: "Art & Paintings",
+    title: "art and paintings",
     description: "Cultural paintings and handcrafted artwork.",
     icon: PaintBrushIcon,
   },
