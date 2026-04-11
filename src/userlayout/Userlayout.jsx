@@ -10,12 +10,12 @@ import Home from './pages/Home/Home';
 import Notfund from './pages/notfound/Notfund';
 import Workshops from './pages/workshops/Workshops';
 import Workdetails from './pages/workshopsdetail/Workdetails';
-import Products from './pages/products/Products';
 import Navbars from "./usercomponents/Navbar";
 import Region from './pages/region/Region';
 import Reservasion from './pages/myreservasions/Reservasion';
 import Footer from "./usercomponents/Footer";
 import Buyerorders from './pages/myordersbuyer/Buyerorders';
+import AllProducts from './pages/products/Products';
 
 const Userlayout = () => {
     return (
@@ -24,7 +24,7 @@ const Userlayout = () => {
 
         <Routes>
           <Route index element={<Home />} />
-          <Route path="products" element={<Products />} />
+          <Route path="products" element={<AllProducts />} />
           <Route path="details/:id" element={<Productdetail />} />
           <Route path="category/:category" element={<Category />} />
           <Route path="about" element={<About />} />

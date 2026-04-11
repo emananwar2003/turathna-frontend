@@ -375,7 +375,7 @@ const AdminProductDetail = () => {
       );
 
       const text = await approveRes.text();
-      console.log("STATUS:", approveRes.status, "| BODY:", text);
+   
 
       if (!approveRes.ok) throw new Error(text);
 
