@@ -4,59 +4,51 @@ import { Link } from "react-router-dom";
 const categories = [
   {
     id: 1,
-    name: "Textiles & Embroidery",
+    name: "textiles and embroidery",
     description: "Handwoven fabrics, kilims, and Sinai embroidery.",
-    image:
-      "/firstcat.jpeg",
+    image: "/firstcat.jpeg",
   },
   {
     id: 2,
-    name: "Pottery & Ceramics",
+    name: "pottery and ceramics",
     description: "Traditional handmade pottery and decorative ceramics.",
-    image:
-      "/seccat.jpeg",
+    image: "/seccat.jpeg",
   },
   {
     id: 3,
-    name: "Jewelry & Accessories",
+    name: "jewelry and accessories",
     description: "Silver, copper, and heritage-inspired accessories.",
-    image:
-      "/thirdcat.jpeg",
+    image: "/thirdcat.jpeg",
   },
   {
     id: 4,
     name: "Home Décor",
     description: "Authentic Egyptian decorative pieces.",
-    image:
-      "/forthcat.jpeg",
+    image: "/forthcat.jpeg",
   },
   {
     id: 5,
-    name: "Bags & Leather Goods",
+    name: "bags and leather goods",
     description: "Handcrafted leather bags and accessories.",
-    image:
-      "/leather.jpeg",
+    image: "/leather.jpeg",
   },
   {
     id: 6,
     name: "Wood & Carved Art",
     description: "Hand-carved wooden crafts and ornaments.",
-    image:
-      "/sixcat.jpeg",
+    image: "/sixcat.jpeg",
   },
   {
     id: 7,
     name: "Handmade Gifts",
     description: "Unique gift items crafted by local artisans.",
-    image:
-      "/sevencat.jpeg",
+    image: "/sevencat.jpeg",
   },
   {
     id: 8,
-    name: "Art & Paintings",
+    name: "art and paintings",
     description: "Cultural paintings and handcrafted artwork.",
-    image:
-      "/lastcat.jpeg",
+    image: "/lastcat.jpeg",
   },
 ];
 
