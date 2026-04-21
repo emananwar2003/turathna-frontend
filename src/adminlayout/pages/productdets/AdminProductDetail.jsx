@@ -19,7 +19,6 @@ import {
 import Swal from "sweetalert2";
 import { useParams, useNavigate } from "react-router-dom";
 
-
 const regions = [
   { id: 1, name: "Sinai", slug: "sinai" },
   { id: 2, name: "Nubia", slug: "nubia" },
@@ -40,7 +39,6 @@ const categories = [
 ];
 
 const arabicRe = /^[\u0600-\u06FF\s\d.,!?'"()\-&]+$/;
-
 const noArabicRe = /^[^\u0600-\u06FF]+$/;
 
 const fieldValidators = {
@@ -87,7 +85,6 @@ const fieldValidators = {
       : "",
 };
 
-
 const urlToFile = async (url) => {
   const res = await fetch(url);
   const blob = await res.blob();
@@ -96,6 +93,35 @@ const urlToFile = async (url) => {
   return new File([blob], filename, { type: mimeType });
 };
 
+
+const hasMeaningfulPendingUpdate = (pendingUpdate) => {
+  if (!pendingUpdate || typeof pendingUpdate !== "object") return false;
+  const keys = Object.keys(pendingUpdate);
+ 
+  if (
+    keys.length === 1 &&
+    keys[0] === "productImages" &&
+    Array.isArray(pendingUpdate.productImages) &&
+    pendingUpdate.productImages.length === 0
+  ) {
+    return false;
+  }
+  return true;
+};
+
+
+const resolveRegionSlug = (r) => {
+  if (!r) return "";
+  if (typeof r === "object") return r.slugName || r.slug || "";
+  return regions.find((x) => x.slug === r)?.slug || r;
+};
+
+
+const resolveCategoryVal = (c) => {
+  if (!c) return "";
+  if (typeof c === "object") return c.slug || c.value || "";
+  return categories.find((x) => x.value === c)?.value || c;
+};
 
 const SectionTitle = ({ children }) => (
   <div className="flex items-center gap-3 my-6">
@@ -120,7 +146,6 @@ const Field = ({ label, error, touched, children }) => (
     )}
   </div>
 );
-
 
 const ImageCarousel = ({ images }) => {
   const [current, setCurrent] = useState(0);
@@ -171,11 +196,19 @@ const ImageCarousel = ({ images }) => {
 };
 
 
+const UpdatedBadge = () => (
+  <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-300 align-middle">
+    Updated
+  </span>
+);
+
 const AdminProductDetail = () => {
   const { productId } = useParams();
   const navigate = useNavigate();
   const [fetching, setFetching] = useState(true);
   const [actioning, setActioning] = useState(false);
+  const [isSellerUpdate, setIsSellerUpdate] = useState(false);
+  const [originalSnapshot, setOriginalSnapshot] = useState(null);
 
   const [form, setForm] = useState({
     title_ar: "",
@@ -197,7 +230,6 @@ const AdminProductDetail = () => {
   const [errors, setErrors] = useState({});
   const [touched, setTouched] = useState({});
 
-
   useEffect(() => {
     const load = async () => {
       try {
@@ -209,41 +241,120 @@ const AdminProductDetail = () => {
         const data = await res.json();
         const p = data?.data?.product || data?.data || {};
 
-        const regionSlug = (() => {
-          const r = p.region;
-          if (!r) return "";
-          if (typeof r === "object") return r.slugName || r.slug || "";
-          return regions.find((x) => x.slug === r)?.slug || r;
-        })();
+        const pending = p.pendingUpdate;
+        const meaningful = hasMeaningfulPendingUpdate(pending);
+        setIsSellerUpdate(meaningful);
 
-        const categoryVal = (() => {
-          const c = p.category;
-          if (!c) return "";
-          if (typeof c === "object") return c.slug || c.value || "";
-          return categories.find((x) => x.value === c)?.value || c;
-        })();
+        if (meaningful) {
+      
+          setOriginalSnapshot({
+            title_ar: p.title_ar || "",
+            title_en: p.title_en || "",
+            description_ar: p.description_ar || "",
+            description_en: p.description_en || "",
+            originalPrice: String(p.originalPrice || ""),
+            region: resolveRegionSlug(p.region),
+            category: resolveCategoryVal(p.category),
+            heritage_text: p.heritage_text || "",
+            heritage_video: p.heritage_video || "",
+            existingImages: p.productImages || [],
+          });
 
-        setForm({
-          title_ar: p.title_ar || "",
-          description_ar: p.description_ar || "",
-          title_en: p.title_en || "",
-          description_en: p.description_en || "",
-          originalPrice: String(p.originalPrice || ""),
-          region: regionSlug,
-          category: categoryVal,
-          heritageType: p.heritage_video
+    
+          const merged_title_ar =
+            pending.title_ar !== undefined
+              ? pending.title_ar
+              : p.title_ar || "";
+          const merged_title_en =
+            pending.title_en !== undefined
+              ? pending.title_en
+              : p.title_en || "";
+          const merged_description_ar =
+            pending.description_ar !== undefined
+              ? pending.description_ar
+              : p.description_ar || "";
+          const merged_description_en =
+            pending.description_en !== undefined
+              ? pending.description_en
+              : p.description_en || "";
+          const merged_price =
+            pending.originalPrice !== undefined
+              ? String(pending.originalPrice)
+              : String(p.originalPrice || "");
+          const merged_region =
+            pending.region !== undefined
+              ? resolveRegionSlug(pending.region)
+              : resolveRegionSlug(p.region);
+         
+          const merged_category = resolveCategoryVal(p.category);
+
+
+          const merged_heritage_video =
+            pending.heritage_video !== undefined
+              ? pending.heritage_video
+              : p.heritage_video || "";
+          const merged_heritage_text =
+            pending.heritage_text !== undefined
+              ? pending.heritage_text
+              : p.heritage_text || "";
+          const merged_heritageType = merged_heritage_video
             ? "video"
-            : p.heritage_text
+            : merged_heritage_text
               ? "text"
-              : "",
-          heritage_video: null,
-          heritage_video_existing: p.heritage_video || "",
-          heritage_text: p.heritage_text || "",
-          existingImages: p.productImages || [],
-          newPhotos: [],
-          verificationStatus: p.verificationStatus || "pending",
-          rejectionMsg: p.rejectionMsg || "",
-        });
+              : "";
+
+          // Images: if pendingUpdate has a non-empty productImages array use it,
+          // otherwise fall back to the product's current images
+          const pendingImages =
+            Array.isArray(pending.productImages) &&
+            pending.productImages.length > 0
+              ? pending.productImages
+              : p.productImages || [];
+
+          setForm({
+            title_ar: merged_title_ar,
+            description_ar: merged_description_ar,
+            title_en: merged_title_en,
+            description_en: merged_description_en,
+            originalPrice: merged_price,
+            region: merged_region,
+            category: merged_category,
+            heritageType: merged_heritageType,
+            heritage_video: null,
+            heritage_video_existing: merged_heritage_video,
+            heritage_text: merged_heritage_text,
+            existingImages: pendingImages,
+            newPhotos: [],
+            verificationStatus: p.verificationStatus || "pending",
+            rejectionMsg: p.rejectionMsg || "",
+          });
+        } else {
+      
+          const regionSlug = resolveRegionSlug(p.region);
+          const categoryVal = resolveCategoryVal(p.category);
+
+          setForm({
+            title_ar: p.title_ar || "",
+            description_ar: p.description_ar || "",
+            title_en: p.title_en || "",
+            description_en: p.description_en || "",
+            originalPrice: String(p.originalPrice || ""),
+            region: regionSlug,
+            category: categoryVal,
+            heritageType: p.heritage_video
+              ? "video"
+              : p.heritage_text
+                ? "text"
+                : "",
+            heritage_video: null,
+            heritage_video_existing: p.heritage_video || "",
+            heritage_text: p.heritage_text || "",
+            existingImages: p.productImages || [],
+            newPhotos: [],
+            verificationStatus: p.verificationStatus || "pending",
+            rejectionMsg: p.rejectionMsg || "",
+          });
+        }
       } catch {
         Swal.fire({
           icon: "error",
@@ -258,7 +369,6 @@ const AdminProductDetail = () => {
     load();
   }, [productId]);
 
-  
   const handleChange = (field, value) => {
     const updatedForm = { ...form, [field]: value };
     setForm(updatedForm);
@@ -270,7 +380,6 @@ const AdminProductDetail = () => {
       }));
     }
   };
-
 
   const validate = (currentForm = form) => {
     const e = {};
@@ -302,6 +411,11 @@ const AdminProductDetail = () => {
 
   const totalPhotos = form.existingImages.length + form.newPhotos.length;
 
+  
+  const isUpdated = (field) => {
+    if (!isSellerUpdate || !originalSnapshot) return false;
+    return String(originalSnapshot[field] ?? "") !== String(form[field] ?? "");
+  };
 
   const handleApprove = async () => {
     const allTouched = Object.fromEntries(
@@ -353,7 +467,6 @@ const AdminProductDetail = () => {
         fd.append("heritage_text", form.heritage_text);
       }
 
-  
       for (const url of form.existingImages) {
         try {
           const file = await urlToFile(url);
@@ -375,7 +488,6 @@ const AdminProductDetail = () => {
       );
 
       const text = await approveRes.text();
-   
 
       if (!approveRes.ok) throw new Error(text);
 
@@ -451,7 +563,6 @@ const AdminProductDetail = () => {
     }
   };
 
-
   if (fetching) {
     return (
       <div
@@ -513,16 +624,45 @@ const AdminProductDetail = () => {
                   Product Review
                 </Typography>
                 <p className="text-gray-500 text-sm mt-1">
-                  Review, edit, then approve or reject this product
+                  {isSellerUpdate
+                    ? "Seller requested an update — review changes below then approve or reject"
+                    : "Review, edit, then approve or reject this product"}
                 </p>
               </div>
-              <span
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${statusBadge}`}
-              >
-                <span className={`w-1.5 h-1.5 rounded-full ${statusDot}`} />
-                {statusLabel}
-              </span>
+              <div className="flex flex-col items-end gap-2">
+                <span
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${statusBadge}`}
+                >
+                  <span className={`w-1.5 h-1.5 rounded-full ${statusDot}`} />
+                  {statusLabel}
+                </span>
+                {isSellerUpdate && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border bg-blue-50 text-blue-700 border-blue-300">
+                    Seller Update Request
+                  </span>
+                )}
+              </div>
             </div>
+
+            {/* ── Seller update info banner ── */}
+            {isSellerUpdate && (
+              <div className="mb-6 p-4 bg-amber-50 border border-amber-300 rounded-xl flex gap-3">
+                <span className="text-amber-500 text-lg">⚠️</span>
+                <div>
+                  <p className="text-sm font-semibold text-amber-800">
+                    This is a seller update request
+                  </p>
+                  <p className="text-xs text-amber-700 mt-0.5">
+                    Fields marked with{" "}
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-700 border border-amber-300">
+                      Updated
+                    </span>{" "}
+                    have been changed by the seller. The form shows the seller's
+                    proposed values.
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* ── Images carousel ── */}
             <ImageCarousel images={form.existingImages} />
@@ -531,6 +671,10 @@ const AdminProductDetail = () => {
             <div className="mb-2">
               <label className="block text-sm font-semibold text-[#1D1616] mb-2">
                 Product Images (1–5)
+                {isSellerUpdate &&
+                  originalSnapshot &&
+                  JSON.stringify(originalSnapshot.existingImages) !==
+                    JSON.stringify(form.existingImages) && <UpdatedBadge />}
               </label>
 
               {(form.existingImages.length > 0 ||
@@ -629,7 +773,12 @@ const AdminProductDetail = () => {
             <SectionTitle>Arabic Content</SectionTitle>
             <div className="space-y-4" dir="rtl">
               <Field
-                label="العنوان بالعربية"
+                label={
+                  <>
+                    العنوان بالعربية
+                    {isUpdated("title_ar") && <UpdatedBadge />}
+                  </>
+                }
                 error={errors.title_ar}
                 touched={touched.title_ar}
               >
@@ -641,7 +790,12 @@ const AdminProductDetail = () => {
                 />
               </Field>
               <Field
-                label="الوصف بالعربية"
+                label={
+                  <>
+                    الوصف بالعربية
+                    {isUpdated("description_ar") && <UpdatedBadge />}
+                  </>
+                }
                 error={errors.description_ar}
                 touched={touched.description_ar}
               >
@@ -661,7 +815,12 @@ const AdminProductDetail = () => {
             <SectionTitle>English Content</SectionTitle>
             <div className="space-y-4">
               <Field
-                label="Title (English)"
+                label={
+                  <>
+                    Title (English)
+                    {isUpdated("title_en") && <UpdatedBadge />}
+                  </>
+                }
                 error={errors.title_en}
                 touched={touched.title_en}
               >
@@ -673,7 +832,12 @@ const AdminProductDetail = () => {
                 />
               </Field>
               <Field
-                label="Description (English)"
+                label={
+                  <>
+                    Description (English)
+                    {isUpdated("description_en") && <UpdatedBadge />}
+                  </>
+                }
                 error={errors.description_en}
                 touched={touched.description_en}
               >
@@ -693,7 +857,12 @@ const AdminProductDetail = () => {
             <SectionTitle>Product Details</SectionTitle>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Field
-                label="Price (EGP)"
+                label={
+                  <>
+                    Price (EGP)
+                    {isUpdated("originalPrice") && <UpdatedBadge />}
+                  </>
+                }
                 error={errors.originalPrice}
                 touched={touched.originalPrice}
               >
@@ -708,7 +877,12 @@ const AdminProductDetail = () => {
                 />
               </Field>
               <Field
-                label="Region"
+                label={
+                  <>
+                    Region
+                    {isUpdated("region") && <UpdatedBadge />}
+                  </>
+                }
                 error={errors.region}
                 touched={touched.region}
               >
@@ -883,7 +1057,12 @@ const AdminProductDetail = () => {
 
               {form.heritageType === "text" && (
                 <Field
-                  label="Heritage Text"
+                  label={
+                    <>
+                      Heritage Text
+                      {isUpdated("heritage_text") && <UpdatedBadge />}
+                    </>
+                  }
                   error={errors.heritage_text}
                   touched={touched.heritage_text}
                 >

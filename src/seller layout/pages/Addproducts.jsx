@@ -12,7 +12,7 @@ import Swal from "sweetalert2";
 const regions = [
   { id: 1, name: "سيناء", slug: "sinai" },
   { id: 2, name: "النوبة", slug: "nubia" },
-  { id: 3, name: "سيوة", slug: "Siwa-Oasis" },
+  { id: 3, name: "سيوة", slug: "siwa-oasis" },
   { id: 4, name: "شمال مصر", slug: "upper-egypt" },
   { id: 5, name: "الفيوم", slug: "fayoum" },
 ];
