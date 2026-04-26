@@ -1,5 +1,6 @@
 
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export const BG_STYLE = {
@@ -30,7 +31,9 @@ export const HANDMADE_GIFTS_CATEGORIES = [
   "jewelry-and-accessories",
   "pottery-and-ceramics",
   "home-decor",
+  "art-and-paintings",
 ];
+
 
 // ── Image Carousel ─────────────────────────────────────────────────────────────
 export const ProductCarousel = ({ coverImage, productImages }) => {
@@ -44,7 +47,6 @@ export const ProductCarousel = ({ coverImage, productImages }) => {
         No image
       </div>
     );
-
   return (
     <div className="relative w-full h-56 overflow-hidden rounded-t-2xl group">
       <img
@@ -87,32 +89,45 @@ export const ProductCarousel = ({ coverImage, productImages }) => {
   );
 };
 
-// ── Product Card ───────────────────────────────────────────────────────────────
-export const ProductCard = ({ product, index }) => (
-  <div
-    className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer group hover:-translate-y-1"
-    style={{ animationDelay: `${index * 60}ms` }}
-  >
-    <ProductCarousel coverImage={product.coverImage} productImages={product.productImages} />
-    <div className="p-4 space-y-2">
-      <h3 className="font-bold text-[#1D1616] text-base leading-tight line-clamp-1 group-hover:text-[#D84040] transition-colors duration-200">
-        {product.title_en || product.title_ar}
-      </h3>
-      <p className="text-gray-500 text-xs leading-relaxed line-clamp-2">
-        {product.description_en || product.description_ar}
-      </p>
-      <div className="flex items-center justify-between pt-1">
-        <span className="text-[#D84040] font-bold text-lg">
-          {product.finalPrice || product.originalPrice}
-          <span className="text-xs font-normal text-gray-400 ml-1">EGP</span>
-        </span>
-        <button className="text-xs bg-[#1D1616] hover:bg-[#D84040] text-white px-3 py-1.5 rounded-lg transition-colors duration-200 font-medium">
-          View
-        </button>
+export const ProductCard = ({ product, index }) => {
+  const navigate = useNavigate();
+
+  return (
+    <div
+      className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer group hover:-translate-y-1"
+      style={{ animationDelay: `${index * 60}ms` }}
+    >
+      <ProductCarousel
+        coverImage={product.coverImage}
+        productImages={product.productImages}
+      />
+
+      <div className="p-4 space-y-2">
+        <h3 className="font-bold text-[#1D1616] text-base leading-tight line-clamp-1 group-hover:text-[#D84040] transition-colors duration-200">
+          {product.title_en || product.title_ar}
+        </h3>
+
+        <p className="text-gray-500 text-xs leading-relaxed line-clamp-2">
+          {product.description_en || product.description_ar}
+        </p>
+
+        <div className="flex items-center justify-between pt-1">
+          <span className="text-[#D84040] font-bold text-lg">
+            {product.finalPrice || product.originalPrice}
+            <span className="text-xs font-normal text-gray-400 ml-1">EGP</span>
+          </span>
+
+          <button
+            className="text-xs bg-[#1D1616] hover:bg-[#D84040] text-white px-3 py-1.5 rounded-lg transition-colors duration-200 font-medium"
+            onClick={() => navigate(`/details/${product._id}`)}
+          >
+            View
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ── Search Bar ─────────────────────────────────────────────────────────────────
 export const SearchBar = ({ value, onChange }) => (
