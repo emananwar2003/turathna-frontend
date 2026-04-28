@@ -28,7 +28,7 @@ const actions = [
   {
     title: "رؤية جميع ورشي",
     description: "قم بحذف او رؤية تفاصيل الورش ",
-    route: "",
+    route: "/sellerdashboard/seemyworkshops",
   },
 ];
 
