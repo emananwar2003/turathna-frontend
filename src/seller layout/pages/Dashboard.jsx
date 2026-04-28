@@ -20,6 +20,16 @@ const actions = [
     description: "قم بتعديل أو تحديث المنتجات الموجودة.",
     route: "/sellerdashboard/seemyproducts",
   },
+  {
+    title: " اضافة ورشة جديدة",
+    description: "أضف ورشة تعليمية جديدة إلى المتجر.",
+    route: "/sellerdashboard/addworkshop",
+  },
+  {
+    title: "رؤية جميع ورشي",
+    description: "قم بحذف او رؤية تفاصيل الورش ",
+    route: "",
+  },
 ];
 
 const Dashboard = () => {
