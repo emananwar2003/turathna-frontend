@@ -46,7 +46,7 @@ const AddWorkshop = () => {
   const today = new Date().toISOString().split("T")[0];
 
  
-  const textRegex = /^[\u0600-\u06FF\s]+$/;
+  const textRegex = /^[\u0600-\u06FF0-9\s]+$/;
 
   const validateField = (field, value, currentForm) => {
     const f = currentForm || form;
