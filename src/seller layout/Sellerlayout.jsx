@@ -6,6 +6,7 @@ import Addproducts from './pages/Addproducts';
 import Navbars from '../userlayout/usercomponents/Navbar';
 import SellerProductList  from './pages/seemyproducts/SellerProductList';
 import EditProduct from './pages/editproducts/Editproduct';
+import AddWorkshop from './pages/addworkshop/Addworkshop';
 
 
 
@@ -18,6 +19,7 @@ const Sellerlayout = () => {
         <Route path="addproduct" element={<Addproducts />} />
         <Route path="editproduct/:productId" element={<EditProduct />} />
         <Route path="seemyproducts" element={<SellerProductList />} />
+        <Route path="addworkshop" element={<AddWorkshop />} />
       </Routes>
     </div>
   );

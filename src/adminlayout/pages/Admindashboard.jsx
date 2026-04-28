@@ -19,6 +19,11 @@ const actions = [
     description: "Review and approve newly registered products.",
     route: "/admindashboard/newproducts",
   },
+  {
+    title: "See New workshops",
+    description: "Review and approve newly registered workshops.",
+    route: "",
+  },
 ];
 
 const Admindashboard = () => {
