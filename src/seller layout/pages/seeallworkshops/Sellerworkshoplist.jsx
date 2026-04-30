@@ -24,7 +24,7 @@ const statusConfig = {
     dot: "bg-amber-500",
     icon: <ClockIcon className="h-4 w-4" />,
   },
-  accepted: {
+  approved: {
     label: "مقبول",
     bg: "bg-green-100",
     text: "text-green-800",
@@ -50,7 +50,7 @@ const WorkshopCard = ({ workshop, onDelete }) => {
   const handleStatusClick = () => {
     Swal.fire({
       icon:
-        workshop.verificationStatus === "accepted"
+        workshop.verificationStatus === "approved"
           ? "success"
           : workshop.verificationStatus === "rejected"
             ? "error"
@@ -59,7 +59,7 @@ const WorkshopCard = ({ workshop, onDelete }) => {
       text:
         workshop.verificationStatus === "pending"
           ? "ورشتك قيد التقييم من قِبَل الإدارة، يرجى الانتظار."
-          : workshop.verificationStatus === "accepted"
+          : workshop.verificationStatus === "approved"
             ? "تهانينا! تم قبول ورشتك وهي متاحة الآن."
             : `سبب الرفض: ${workshop.rejectionMsg || "تم رفض الورشة من قِبَل الإدارة."}`,
       confirmButtonColor: "#D84040",

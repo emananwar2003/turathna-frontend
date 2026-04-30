@@ -22,7 +22,7 @@ const statusConfig = {
     border: "border-amber-300",
     dot: "bg-amber-500",
   },
-  accepted: {
+  approved: {
     label: "مقبول",
     bg: "bg-green-100",
     text: "text-green-800",
@@ -70,7 +70,7 @@ const WorkshopDetail = () => {
           },
         );
         const data = await res.json();
-        console.log("📦 Workshop Detail:", data);
+       
         setWorkshop(data?.data?.workshop || data?.data || null);
       } catch {
         Swal.fire({

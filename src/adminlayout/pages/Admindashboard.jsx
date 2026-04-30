@@ -22,7 +22,7 @@ const actions = [
   {
     title: "See New workshops",
     description: "Review and approve newly registered workshops.",
-    route: "",
+    route: "/admindashboard/newworkshops",
   },
 ];
 
