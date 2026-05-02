@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import Swal from "sweetalert2";
-
+import { useAuth } from "./Authcontext";
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
@@ -9,7 +9,8 @@ export const CartProvider = ({ children }) => {
 
   const token = localStorage.getItem("token");
   const [initialized, setInitialized] = useState(false);
-    
+  const userinfo  = useAuth();
+  const role = userinfo?.role;
   // ── Fetch cart ──────────────────────────────────────────────────────────────
   const fetchCart = async () => {
       if (!token) {
@@ -37,10 +38,11 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
+useEffect(() => {
+  if (token && role === "buyer") {
     fetchCart();
-  }, [token]);
-
+  }
+}, [token, role]);
   // ── Add / increase quantity ─────────────────────────────────────────────────
   const addToCart = async (productId) => {
     if (!token) return;
