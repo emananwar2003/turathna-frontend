@@ -4,7 +4,8 @@ import Signlayout from './signinup layout/signlayout';
 import Userlayout from './userlayout/Userlayout';
 import Sellerlayout from './seller layout/Sellerlayout';
 import Adminlayout from './adminlayout/Adminlayout';
-import ProtectAdmin from "./context/ProtectAdmin";
+import ProtectRoute from './context/ProtectAdmin';
+
 
 const App = () => {
   return (
@@ -16,17 +17,17 @@ const App = () => {
         <Route
           path="/sellerdashboard/*"
           element={
-            <ProtectAdmin>
+            <ProtectRoute allowedRoles={["seller"]}>
               <Sellerlayout />
-            </ProtectAdmin>
+            </ProtectRoute>
           }
         />
         <Route
           path="/admindashboard/*"
           element={
-            <ProtectAdmin>
+            <ProtectRoute allowedRoles={["admin"]}>
               <Adminlayout />
-            </ProtectAdmin>
+            </ProtectRoute>
           }
         />
       </Routes>

@@ -9,6 +9,7 @@ import EditProduct from './pages/editproducts/Editproduct';
 import AddWorkshop from './pages/addworkshop/Addworkshop';
 import SellerWorkshopList from './pages/seeallworkshops/Sellerworkshoplist';
 import WorkshopDetail from './pages/workshopdets/Workshopdetail';
+import Sellerreservation from './seesellersreservation/Sellerreservastion';
 
 
 
@@ -23,7 +24,8 @@ const Sellerlayout = () => {
         <Route path="seemyproducts" element={<SellerProductList />} />
         <Route path="addworkshop" element={<AddWorkshop />} />
         <Route path="seemyworkshops" element={<SellerWorkshopList />} />
-        <Route path="workshopdetail/:workshopId" element={<WorkshopDetail />}/>
+        <Route path="workshopdetail/:workshopId" element={<WorkshopDetail />} />
+        <Route path="sellerreservation" element={<Sellerreservation />} />
       </Routes>
     </div>
   );

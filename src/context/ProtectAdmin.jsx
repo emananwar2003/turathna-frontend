@@ -2,60 +2,61 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useAuth } from "./Authcontext";
 import Swal from "sweetalert2";
 import { useEffect } from "react";
-import Home from "../userlayout/pages/Home/Home";
 
-const ProtectAdmin = ({ children }) => {
+const ProtectRoute = ({ children, allowedRoles }) => {
   const { status, userinfo, loading } = useAuth();
   const navigate = useNavigate();
 
- useEffect(() => {
-   if (loading) return;
+  // 🔐 Handle NOT logged in
+  useEffect(() => {
+    if (loading) return;
 
-   if (!status) {
-     Swal.fire({
-       title: "You should log in first",
-       text: "Are you a buyer or a seller?",
-       icon: "warning",
-       showCancelButton: true,
-       confirmButtonText: "Seller",
-       cancelButtonText: "Buyer",
-       showCloseButton: true,
-       confirmButtonColor: "#D84040",
-       cancelButtonColor: "#1D1616",
+    if (!status) {
+      Swal.fire({
+        title: "You should log in first",
+        text: "Are you a buyer or a seller?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Seller",
+        cancelButtonText: "Buyer",
+        confirmButtonColor: "#D84040",
+        cancelButtonColor: "#1D1616",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          navigate("/registration/sellerlogin");
+        } else {
+          navigate("/registration/userlogin");
+        }
+      });
+    }
+  }, [loading, status, navigate]);
 
-       didOpen: () => {
-         const text =
-           "عليك تسجيل الدخول اولا هل انت بائع ام شاري انن كنت بائع اضغط علي الزرالاحمر";
+ 
+  useEffect(() => {
+    if (loading || !status) return;
 
-         const speech = new SpeechSynthesisUtterance(text);
-         speech.lang = "ar-EG";
-         speech.rate = 1;
+    if (!allowedRoles.includes(userinfo?.role)) {
+      Swal.fire({
+        icon: "error",
+        title: "Not Allowed",
+        text: "You don't have permission to access this page",
+      });
+    }
+  }, [loading, status, userinfo, allowedRoles]);
 
-         speechSynthesis.cancel();
-         speechSynthesis.speak(speech);
-       },
-     }).then((result) => {
-       if (result.isConfirmed) {
-         navigate("/registration/sellerlogin");
-       } else if (result.dismiss === Swal.DismissReason.cancel) {
-         navigate("/registration/userlogin");
-       } else {
-         
-         navigate("/");
-       }
-     });
-   }
- }, [loading, status, navigate]);
 
   if (loading) return null;
 
-  if (!status) return <Home/> ;
 
-  if (userinfo?.role !== "admin" && userinfo?.role !== "seller") {
+  if (!status) return null;
+
+ 
+  if (!allowedRoles.includes(userinfo?.role)) {
     return <Navigate to="/" replace />;
   }
+
 
   return children;
 };
 
-export default ProtectAdmin;
+export default ProtectRoute;

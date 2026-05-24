@@ -6,8 +6,13 @@ export default defineConfig({
   plugins: [
     react({
       babel: {
-        plugins: [['babel-plugin-react-compiler']],
+        plugins: [["babel-plugin-react-compiler"]],
       },
     }),
   ],
-})
+  server: {
+    open: true,
+    browser: "chrome",
+    allowedHosts: ["helmet-tablet-raving.ngrok-free.dev"],
+  },
+});

@@ -24,6 +24,11 @@ const actions = [
     description: "Review and approve newly registered workshops.",
     route: "/admindashboard/newworkshops",
   },
+  {
+    title: "see workshops reservation",
+    description: "review who have sign up for our  new workshops.",
+    route: "/admindashboard/seenewres",
+  },
 ];
 
 const Admindashboard = () => {

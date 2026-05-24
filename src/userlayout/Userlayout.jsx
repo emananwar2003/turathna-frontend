@@ -7,15 +7,16 @@ import About from './pages/aboutcontact/About';
 import Category from './pages/category/Category';
 import Home from './pages/Home/Home';
 import Notfund from './pages/notfound/Notfund';
-import Workshops from './pages/workshops/Workshops';
 import Workdetails from './pages/workshopsdetail/Workdetails';
 import ProductDetail from './pages/productsdetails/Productdetail';
 import Navbars from "./usercomponents/Navbar";
 import Region from './pages/region/Region';
-import Reservasion from './pages/myreservasions/Reservasion';
 import Footer from "./usercomponents/Footer";
 import Buyerorders from './pages/myordersbuyer/Buyerorders';
 import AllProducts from './pages/products/Products';
+import AllWorkshops from './pages/workshops/Workshops';
+import MyReservations from './pages/myreservasions/Reservasion';
+
 
 const Userlayout = () => {
     return (
@@ -30,10 +31,10 @@ const Userlayout = () => {
           <Route path="about" element={<About />} />
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />
-          <Route path="workshops" element={<Workshops />} />
+          <Route path="workshops" element={<AllWorkshops/>} />
           <Route path="workshopdet/:id" element={<Workdetails />} />
           <Route path="region/:region" element={<Region />} />
-          <Route path="reservasions" element={<Reservasion />} />
+          <Route path="myreservasions" element={<MyReservations />} />
           <Route path="buyerorders" element={<Buyerorders />} />
           <Route path="*" element={<Notfund />} />
         </Routes>
