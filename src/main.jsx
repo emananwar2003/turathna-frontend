@@ -7,13 +7,13 @@ import { ThemeProvider } from "@material-tailwind/react";
 import { AuthProvider } from './context/Authcontext.jsx';
 import { CartProvider } from './context/Cartcontext .jsx';
 createRoot(document.getElementById("root")).render(
-  <CartProvider>
-    <AuthProvider>
+  <AuthProvider>
+    <CartProvider>
       <ThemeProvider>
         <BrowserRouter>
           <App />
         </BrowserRouter>
       </ThemeProvider>
-    </AuthProvider>
-  </CartProvider>,
+    </CartProvider>
+  </AuthProvider>,
 );

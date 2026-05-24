@@ -1,28 +1,36 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { useAuth } from "./Authcontext";
+
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  const token = localStorage.getItem("token");
-  const [initialized, setInitialized] = useState(false);
-  const userinfo  = useAuth();
+  const { userinfo } = useAuth();
   const role = userinfo?.role;
+
+  const getToken = () => localStorage.getItem("token");
+
   // ── Fetch cart ──────────────────────────────────────────────────────────────
   const fetchCart = async () => {
-      if (!token) {
-        setCartItems([]);
+    const token = getToken();
+    if (!token) {
+      setCartItems([]);
       setLoading(false);
       return;
-      }
-       setLoading(true); 
+    }
+    setLoading(true);
     try {
       const res = await fetch("http://localhost:5000/api/v1/cart", {
         headers: { Authorization: token },
       });
+      
+      if (res.status === 403 || res.status === 401) {
+        setCartItems([]);
+        return;
+      }
       const data = await res.json();
       setCartItems(data?.data?.cart?.products || []);
     } catch {
@@ -33,18 +41,23 @@ export const CartProvider = ({ children }) => {
         confirmButtonColor: "#D84040",
       });
     } finally {
-        setLoading(false);
-        setInitialized(true);
+      setLoading(false);
     }
   };
 
-useEffect(() => {
-  if (token && role === "buyer") {
-    fetchCart();
-  }
-}, [token, role]);
+  // ── Only fetch when role is buyer ───────────────────────────────────────────
+  useEffect(() => {
+    if (role === "buyer") {
+      fetchCart();
+    } else {
+      setCartItems([]);
+      setLoading(false);
+    }
+  }, [role]);
+
   // ── Add / increase quantity ─────────────────────────────────────────────────
   const addToCart = async (productId) => {
+    const token = getToken();
     if (!token) return;
     try {
       await fetch("http://localhost:5000/api/v1/cart", {
@@ -65,6 +78,7 @@ useEffect(() => {
 
   // ── Decrease quantity ───────────────────────────────────────────────────────
   const decreaseQty = async (productId) => {
+    const token = getToken();
     if (!token) return;
     try {
       await fetch(`http://localhost:5000/api/v1/cart/items/${productId}`, {
@@ -84,6 +98,7 @@ useEffect(() => {
 
   // ── Remove item ─────────────────────────────────────────────────────────────
   const removeItem = async (productId) => {
+    const token = getToken();
     if (!token) return;
     try {
       await fetch(`http://localhost:5000/api/v1/cart/items/${productId}`, {
@@ -103,6 +118,7 @@ useEffect(() => {
 
   // ── Clear cart ──────────────────────────────────────────────────────────────
   const clearCart = async () => {
+    const token = getToken();
     if (!token) return;
     try {
       await fetch("http://localhost:5000/api/v1/cart", {

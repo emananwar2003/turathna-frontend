@@ -30,6 +30,11 @@ const actions = [
     description: "قم بحذف او رؤية تفاصيل الورش ",
     route: "/sellerdashboard/seemyworkshops",
   },
+  {
+    title: "رؤية جميع  حجوزاتي",
+    description: "قم برؤية من حجز ورشة العمل القادمة",
+    route: "/sellerdashboard/sellerreservation",
+  },
 ];
 
 const Dashboard = () => {

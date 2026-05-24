@@ -9,6 +9,7 @@ import AdminProductList from './pages/seenewproducts/Pendingproducts';
 import AdminProductDetail from './pages/productdets/AdminProductDetail';
 import PendingWorkshops from './pages/newworkshops/PendingWorkshops';
 import Workshopdets from './pages/workshopdets/Workshopdets';
+import AdminReservations from './pages/seenewres/AdminReservations';
 
 
 
@@ -30,6 +31,7 @@ const Adminlayout = () => {
           path="workshopreview/:workshopId"
           element={<Workshopdets />}
         />
+        <Route path="seenewres" element={<AdminReservations />} />
       </Routes>
     </div>
   );

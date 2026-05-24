@@ -44,9 +44,9 @@ const UserProfileMenu = () => {
   );
 
   const buyerMenu = [
-    { label: "My Reservations", path: "/reservasions" },
     { label: "Cart", path: "/cart" },
     { label: "Edit Profile", path: `/registration/editprofile/${userId}` },
+    { label: "My Reservations", path: "/myreservasions" },
     { label: "My Orders", path: "/buyerorders" },
   ];
 
