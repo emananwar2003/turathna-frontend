@@ -29,6 +29,11 @@ const actions = [
     description: "review who have sign up for our  new workshops.",
     route: "/admindashboard/seenewres",
   },
+  {
+    title: "see finished order",
+    description: "review newely finished orders and update shipping status.",
+    route: "/admindashboard/adminorder",
+  },
 ];
 
 const Admindashboard = () => {
