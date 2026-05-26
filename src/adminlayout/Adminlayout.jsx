@@ -10,6 +10,7 @@ import AdminProductDetail from './pages/productdets/AdminProductDetail';
 import PendingWorkshops from './pages/newworkshops/PendingWorkshops';
 import Workshopdets from './pages/workshopdets/Workshopdets';
 import AdminReservations from './pages/seenewres/AdminReservations';
+import AdminOrders from './pages/AdminOrders/AdminOrders';
 
 
 
@@ -27,11 +28,9 @@ const Adminlayout = () => {
           element={<AdminProductDetail />}
         />
         <Route path="newworkshops" element={<PendingWorkshops />} />
-        <Route
-          path="workshopreview/:workshopId"
-          element={<Workshopdets />}
-        />
+        <Route path="workshopreview/:workshopId" element={<Workshopdets />} />
         <Route path="seenewres" element={<AdminReservations />} />
+        <Route path="adminorder" element={<AdminOrders/>} />
       </Routes>
     </div>
   );

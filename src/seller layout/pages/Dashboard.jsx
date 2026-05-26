@@ -35,6 +35,11 @@ const actions = [
     description: "قم برؤية من حجز ورشة العمل القادمة",
     route: "/sellerdashboard/sellerreservation",
   },
+  {
+    title: "رؤية جميع طلباتي",
+    description: "قم برؤية طلباتي الجديدة",
+    route: "/sellerdashboard/sellerorders",
+  },
 ];
 
 const Dashboard = () => {
