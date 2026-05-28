@@ -43,6 +43,7 @@ const Workdetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [workshop, setWorkshop] = useState(null);
+  const [relatedWorkshops, setRelatedWorkshops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [reserving, setReserving] = useState(false);
   const [reserved, setReserved] = useState(false);
@@ -56,6 +57,7 @@ const Workdetails = () => {
         });
         const data = await res.json();
         setWorkshop(data?.data?.workshop || data?.data || null);
+        setRelatedWorkshops(data?.data?.relatedWorkshops || []);
       } catch {
         Swal.fire({
           icon: "error",
@@ -324,6 +326,90 @@ const Workdetails = () => {
               {workshop.description_en}
             </p>
           </div>
+        </div>
+        {/* ── Related Workshops Section ── */}
+        {relatedWorkshops && relatedWorkshops.length > 0 && (
+          <div className="mt-16 border-t border-gray-200 pt-10">
+            <h2 className="text-2xl font-bold text-[#1D1616] mb-6 font-serif">
+              Related Workshops
+            </h2>
+            <WorkshopsGrid workshops={relatedWorkshops} />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+// ── Workshops Grid Component ──────────────────────────────────────────────────
+const WorkshopsGrid = ({ workshops }) => {
+  if (workshops.length === 0) return null;
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
+      {workshops.map((w, i) => (
+        <WorkshopCard key={w._id} workshop={w} index={i} />
+      ))}
+    </div>
+  );
+};
+
+// ── Workshop Card Component ───────────────────────────────────────────────────
+const WorkshopCard = ({ workshop, index }) => {
+  const navigate = useNavigate();
+  const coverImage = workshop.coverImage || workshop.workshopImages?.[0];
+
+  return (
+    <div
+      className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer group hover:-translate-y-1 flex flex-col justify-between"
+      style={{ animationDelay: `${index * 60}ms` }}
+      onClick={() => navigate(`/workshop/${workshop._id}`)}
+    >
+      <div
+        className="relative w-full overflow-hidden rounded-t-2xl"
+        style={{ aspectRatio: "4/3" }}
+      >
+        {coverImage ? (
+          <img
+            src={coverImage}
+            alt={workshop.title_en}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-full bg-[#1D1616]/10 flex items-center justify-center text-gray-400 text-sm">
+            No image
+          </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#1D1616]/40 via-transparent to-transparent" />
+        <div className="absolute top-3 left-3 flex gap-1">
+          {workshop.workshopOnline && (
+            <span className="bg-[#D84040] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md">
+              Online
+            </span>
+          )}
+          {workshop.workshopOffline && (
+            <span className="bg-[#1D1616] text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md">
+              In-person
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="p-4 space-y-2 flex-1 flex flex-col justify-between">
+        <div className="space-y-1">
+          <h3 className="font-bold text-[#1D1616] text-base leading-tight line-clamp-1 group-hover:text-[#D84040] transition-colors duration-200">
+            {workshop.title_en || workshop.title_ar}
+          </h3>
+          <p className="text-gray-500 text-xs leading-relaxed line-clamp-2">
+            {workshop.description_en || workshop.description_ar}
+          </p>
+        </div>
+        <div className="flex items-center justify-between pt-2 border-t border-gray-50 mt-auto">
+          <span className="text-[#D84040] font-bold text-lg">
+            {workshop.finalPrice || workshop.originalPrice}{" "}
+            <span className="text-xs font-normal text-gray-400 ml-1">EGP</span>
+          </span>
+          <button className="text-xs bg-[#1D1616] hover:bg-[#D84040] text-white px-3 py-1.5 rounded-lg transition-colors duration-200 font-medium">
+            View
+          </button>
         </div>
       </div>
     </div>
