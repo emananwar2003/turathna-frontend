@@ -12,6 +12,8 @@ import {
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import Swal from "sweetalert2";
 import { useCart } from "../../../context/Cartcontext ";
+import { ProductsGrid } from "../../usercomponents/productShared";
+
 const BG_STYLE = {
   backgroundColor: "#EEEEEE",
   backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23D84040' fill-opacity='0.06'%3E%3Cpath d='M30 0l5 10h10l-8 6 3 10-10-7-10 7 3-10-8-6h10z'/%3E%3C/g%3E%3C/svg%3E")`,
@@ -78,6 +80,7 @@ const ProductDetail = () => {
   const { addToCart } = useCart();
 
   const [product, setProduct] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [addingToCart, setAddingToCart] = useState(false);
   const [added, setAdded] = useState(false);
@@ -90,6 +93,7 @@ const ProductDetail = () => {
         );
         const data = await res.json();
         setProduct(data?.data?.product || data?.data || null);
+        setRelatedProducts(data?.data?.relatedProducts || []);
       } catch {
         Swal.fire({
           icon: "error",
@@ -319,6 +323,14 @@ const ProductDetail = () => {
                 </p>
               </div>
             )}
+          </div>
+        )}
+        {relatedProducts && relatedProducts.length > 0 && (
+          <div className="mt-16 border-t border-gray-200 pt-10">
+            <h2 className="text-2xl font-bold text-[#1D1616] mb-6 font-serif">
+              Related Products
+            </h2>
+            <ProductsGrid products={relatedProducts} loading={false} />
           </div>
         )}
       </div>

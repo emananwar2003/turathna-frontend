@@ -16,6 +16,7 @@ import Buyerorders from './pages/myordersbuyer/Buyerorders';
 import AllProducts from './pages/products/Products';
 import AllWorkshops from './pages/workshops/Workshops';
 import MyReservations from './pages/myreservasions/Reservasion';
+import ChatBot from './pages/chatbot/ChatBot';
 
 
 const Userlayout = () => {
@@ -31,7 +32,7 @@ const Userlayout = () => {
           <Route path="about" element={<About />} />
           <Route path="cart" element={<Cart />} />
           <Route path="checkout" element={<Checkout />} />
-          <Route path="workshops" element={<AllWorkshops/>} />
+          <Route path="workshops" element={<AllWorkshops />} />
           <Route path="workshopdet/:id" element={<Workdetails />} />
           <Route path="region/:region" element={<Region />} />
           <Route path="myreservasions" element={<MyReservations />} />
@@ -39,6 +40,7 @@ const Userlayout = () => {
           <Route path="*" element={<Notfund />} />
         </Routes>
         <Footer />
+        <ChatBot />
       </div>
     );
 }
