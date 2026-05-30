@@ -7,6 +7,17 @@ import {
 } from "@heroicons/react/24/outline";
 import { SparklesIcon } from "@heroicons/react/24/solid";
 
+// ── helpers ──────────────────────────────────────────────────────────────────
+
+/**
+ * Strip any leading assistant turns before sending to the API.
+ * Gemini (and most LLM APIs) require the first message to have role "user".
+ */
+const trimLeadingAssistant = (msgs) => {
+  const idx = msgs.findIndex((m) => m.role === "user");
+  return idx === -1 ? [] : msgs.slice(idx);
+};
+
 const renderText = (text) => {
   if (!text) return null;
   const urlRegex = /(https?:\/\/[^\s\n]+)/g;
@@ -31,6 +42,7 @@ const renderText = (text) => {
           </a>
         );
       }
+
       return (
         <a
           key={i}
@@ -43,6 +55,7 @@ const renderText = (text) => {
         </a>
       );
     }
+
     return part.split("\n").map((line, j, arr) => {
       const boldParts = line.split(/\*\*(.*?)\*\*/g);
       return (
@@ -62,6 +75,8 @@ const renderText = (text) => {
     });
   });
 };
+
+// ── sub-components ────────────────────────────────────────────────────────────
 
 const Message = ({ role, content, isStreaming }) => {
   const isUser = role === "user";
@@ -115,6 +130,14 @@ const TypingIndicator = () => (
   </div>
 );
 
+// ── constants ─────────────────────────────────────────────────────────────────
+
+const INITIAL_MESSAGE = {
+  role: "assistant",
+  content:
+    "مرحباً! 👋 Hi! I'm your Turathna assistant. I can help you explore our handcrafted products and workshops. What are you looking for?",
+};
+
 const SUGGESTIONS = [
   "What products do you have?",
   "Show me upcoming workshops",
@@ -122,19 +145,16 @@ const SUGGESTIONS = [
   "What's the price range?",
 ];
 
+// ── main component ────────────────────────────────────────────────────────────
+
 const ChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([
-    {
-      role: "assistant",
-      content:
-        "مرحباً! 👋 Hi! I'm your Turathna assistant. I can help you explore our handcrafted products and workshops. What are you looking for?",
-    },
-  ]);
+  const [messages, setMessages] = useState([INITIAL_MESSAGE]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isStreaming, setIsStreaming] = useState(false);
   const [error, setError] = useState(null);
+
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const abortRef = useRef(null);
@@ -159,6 +179,7 @@ const ChatBot = () => {
     setMessages(newHistory);
     setIsLoading(true);
 
+    // Append a placeholder for the incoming assistant reply
     setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
 
     try {
@@ -173,7 +194,13 @@ const ChatBot = () => {
         headers,
         signal: abortRef.current.signal,
         body: JSON.stringify({
-          messages: newHistory.map(({ role, content }) => ({ role, content })),
+          // ✅ FIX: drop any leading assistant messages before sending
+          messages: trimLeadingAssistant(newHistory).map(
+            ({ role, content }) => ({
+              role,
+              content,
+            }),
+          ),
         }),
       });
 
@@ -184,6 +211,7 @@ const ChatBot = () => {
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
+
       setIsLoading(false);
       setIsStreaming(true);
 
@@ -196,7 +224,7 @@ const ChatBot = () => {
 
         buffer += decoder.decode(value, { stream: true });
         const lines = buffer.split("\n");
-        buffer = lines.pop();
+        buffer = lines.pop(); // keep incomplete line in buffer
 
         for (const line of lines) {
           const trimmed = line.trim();
@@ -223,18 +251,16 @@ const ChatBot = () => {
             }
             if (parsed.error) throw new Error(parsed.error);
           } catch {
-            // skip malformed lines
+            // skip malformed SSE lines
           }
         }
       }
 
-      // If stream ended with no content
       if (!gotContent) throw new Error("Empty response from server");
     } catch (err) {
       if (err.name === "AbortError") return;
 
-      const errMsg = err.message || "Unknown error";
-      setError(errMsg);
+      setError(err.message || "Unknown error");
       setMessages((prev) => {
         const updated = [...prev];
         updated[updated.length - 1] = {
@@ -258,13 +284,7 @@ const ChatBot = () => {
 
   const clearChat = () => {
     abortRef.current?.abort();
-    setMessages([
-      {
-        role: "assistant",
-        content:
-          "مرحباً! 👋 Hi! I'm your Turathna assistant. I can help you explore our handcrafted products and workshops. What are you looking for?",
-      },
-    ]);
+    setMessages([INITIAL_MESSAGE]);
     setInput("");
     setError(null);
     setIsLoading(false);
@@ -349,6 +369,7 @@ const ChatBot = () => {
               }
             />
           ))}
+
           {isLoading && !isStreaming && <TypingIndicator />}
 
           {showSuggestions && (
@@ -367,6 +388,7 @@ const ChatBot = () => {
               </div>
             </div>
           )}
+
           <div ref={messagesEndRef} />
         </div>
 

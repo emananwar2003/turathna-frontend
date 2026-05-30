@@ -17,6 +17,7 @@ import AllProducts from './pages/products/Products';
 import AllWorkshops from './pages/workshops/Workshops';
 import MyReservations from './pages/myreservasions/Reservasion';
 import ChatBot from './pages/chatbot/ChatBot';
+import ProtectedBuyerRoute from '../context/ProtectedBuyerRoute';
 
 
 const Userlayout = () => {
@@ -30,13 +31,41 @@ const Userlayout = () => {
           <Route path="details/:productId" element={<ProductDetail />} />
           <Route path="category/:category" element={<Category />} />
           <Route path="about" element={<About />} />
-          <Route path="cart" element={<Cart />} />
-          <Route path="checkout" element={<Checkout />} />
+          <Route
+            path="cart"
+            element={
+              <ProtectedBuyerRoute>
+                <Cart />
+              </ProtectedBuyerRoute>
+            }
+          />
+          <Route
+            path="checkout"
+            element={
+              <ProtectedBuyerRoute>
+                <Checkout />
+              </ProtectedBuyerRoute>
+            }
+          />
           <Route path="workshops" element={<AllWorkshops />} />
           <Route path="workshopdet/:id" element={<Workdetails />} />
           <Route path="region/:region" element={<Region />} />
-          <Route path="myreservasions" element={<MyReservations />} />
-          <Route path="buyerorders" element={<Buyerorders />} />
+          <Route
+            path="myreservasions"
+            element={
+              <ProtectedBuyerRoute>
+                <MyReservations />
+              </ProtectedBuyerRoute>
+            }
+          />
+          <Route
+            path="buyerorders"
+            element={
+              <ProtectedBuyerRoute>
+                <Buyerorders />
+              </ProtectedBuyerRoute>
+            }
+          />
           <Route path="*" element={<Notfund />} />
         </Routes>
         <Footer />

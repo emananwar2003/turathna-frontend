@@ -11,7 +11,7 @@ import SellerWorkshopList from './pages/seeallworkshops/Sellerworkshoplist';
 import WorkshopDetail from './pages/workshopdets/Workshopdetail';
 import Sellerreservation from './seesellersreservation/Sellerreservastion';
 import SellerOrders from './pages/SellerOrders/SellerOrders';
-
+import Notfund from "../userlayout/pages/notfound/Notfund";
 
 
 const Sellerlayout = () => {
@@ -28,6 +28,7 @@ const Sellerlayout = () => {
         <Route path="workshopdetail/:workshopId" element={<WorkshopDetail />} />
         <Route path="sellerreservation" element={<Sellerreservation />} />
         <Route path="sellerorders" element={<SellerOrders />} />
+        <Route path="*" element={<Notfund />} />
       </Routes>
     </div>
   );

@@ -11,7 +11,7 @@ import PendingWorkshops from './pages/newworkshops/PendingWorkshops';
 import Workshopdets from './pages/workshopdets/Workshopdets';
 import AdminReservations from './pages/seenewres/AdminReservations';
 import AdminOrders from './pages/AdminOrders/AdminOrders';
-
+import Notfund from "../userlayout/pages/notfound/Notfund";
 
 
 const Adminlayout = () => {
@@ -30,7 +30,8 @@ const Adminlayout = () => {
         <Route path="newworkshops" element={<PendingWorkshops />} />
         <Route path="workshopreview/:workshopId" element={<Workshopdets />} />
         <Route path="seenewres" element={<AdminReservations />} />
-        <Route path="adminorder" element={<AdminOrders/>} />
+        <Route path="adminorder" element={<AdminOrders />} />
+        <Route path="*" element={<Notfund />} />
       </Routes>
     </div>
   );
