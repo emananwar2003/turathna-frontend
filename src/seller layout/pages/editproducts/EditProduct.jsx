@@ -100,7 +100,7 @@ const EditProduct = () => {
 
   const validate = (field, value) => {
     let msg = "";
-    const arabicRegex = /^[\u0600-\u06FF0-9\s]+$/;
+    const arabicRegex = /^[\u0600-\u06FF\s\d.,!?'"()\-&]+$/;
     if (field === "title") {
       if (!value.trim()) msg = "العنوان مطلوب";
       else if (!arabicRegex.test(value))

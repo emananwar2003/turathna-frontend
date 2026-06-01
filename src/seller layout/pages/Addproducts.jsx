@@ -51,7 +51,7 @@ const Addproducts = () => {
     let tempErrors = { ...errors };
 
     if (field === "title") {
-      const arabicRegex = /^[\u0600-\u06FF0-9\s]+$/;
+      const arabicRegex = /^[\u0600-\u06FF\s\d.,!?'"()\-&]+$/;
       const words = value.trim().split(/\s+/);
       if (!value.trim()) tempErrors.title = "العنوان مطلوب";
       else if (!arabicRegex.test(value))
@@ -62,7 +62,7 @@ const Addproducts = () => {
     }
 
     if (field === "description") {
-      const arabicRegex = /^[\u0600-\u06FF0-9\s]+$/;
+      const arabicRegex = /^[\u0600-\u06FF\s\d.,!?'"()\-&]+$/;
       const words = value.trim().split(/\s+/);
       if (!value.trim()) tempErrors.description = "الوصف مطلوب";
       else if (!arabicRegex.test(value))
