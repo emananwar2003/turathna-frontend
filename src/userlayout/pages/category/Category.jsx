@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Typography } from "@material-tailwind/react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
   BG_STYLE,
@@ -15,12 +15,18 @@ const CategoryProducts = () => {
   const [activeCategory, setActiveCategory] = useState(
     categoryParam || CATEGORIES[0].value,
   );
+    const navigate = useNavigate();     
   const [products, setProducts] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
   const catMeta =
     CATEGORIES.find((c) => c.value === activeCategory) || CATEGORIES[0];
+    useEffect(() => {
+      if (categoryParam) {
+        setActiveCategory(categoryParam);
+      }
+    }, [categoryParam]);
 
   useEffect(() => {
     const load = async () => {
@@ -103,7 +109,7 @@ const CategoryProducts = () => {
           {CATEGORIES.map((c) => (
             <button
               key={c.value}
-              onClick={() => setActiveCategory(c.value)}
+              onClick={() => navigate(`/category/${c.value}`)}
               className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-all duration-200 border shrink-0 ${
                 activeCategory === c.value
                   ? "bg-[#1D1616] text-white border-[#1D1616] shadow-md"

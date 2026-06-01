@@ -30,24 +30,35 @@ const formatTime = (time) => {
   return `${h12}:${m || "00"} ${period}`;
 };
 
-// Group flat list by workshop
 const groupByWorkshop = (list) => {
   const map = {};
+
   list.forEach((r) => {
-    const w = r.workshopDetails || {};
-    const key = r.workshop || w.title_en || "unknown";
+    const workshop = r.workshop;
+    const isPopulated = workshop && typeof workshop === "object";
+
+  
+    const key = isPopulated
+      ? String(workshop._id)
+      : String(workshop || r.workshopDetails?.title_en || "unknown");
+
     if (!map[key]) {
       map[key] = {
-        ...w,
+        
+        ...(r.workshopDetails || {}),
+       
+        ...(isPopulated ? workshop : {}),
         _id: key,
         seller: r.sellerDetails || null,
         attendees: [],
         totalReserved: 0,
       };
     }
+
     map[key].attendees.push(r);
     map[key].totalReserved += 1;
   });
+
   return Object.values(map);
 };
 
@@ -80,7 +91,6 @@ const WorkshopAttendees = ({ workshop, search }) => {
       <div className="p-5 sm:p-6">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="flex-1 min-w-0">
-            {/* Title */}
             <p className="font-bold text-[#1D1616] text-xl leading-tight mb-0.5">
               {w.title_en || "—"}
             </p>
@@ -90,7 +100,6 @@ const WorkshopAttendees = ({ workshop, search }) => {
               </p>
             )}
 
-            {/* Date / Time / Price */}
             <div className="flex flex-wrap gap-4 mt-2">
               {w.date && (
                 <div className="flex items-center gap-1.5 text-xs text-gray-500">
@@ -116,7 +125,6 @@ const WorkshopAttendees = ({ workshop, search }) => {
               )}
             </div>
 
-            {/* Online / Offline badges */}
             <div className="flex gap-2 mt-3 flex-wrap">
               {w.workshopOnline && (
                 <span className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 border border-blue-200 text-xs font-semibold px-2.5 py-1 rounded-full">
@@ -132,7 +140,6 @@ const WorkshopAttendees = ({ workshop, search }) => {
               )}
             </div>
 
-            {/* Seats progress */}
             {seats > 0 && (
               <>
                 <div className="mt-3 mb-1 flex items-center justify-between text-xs text-gray-500">
@@ -156,7 +163,6 @@ const WorkshopAttendees = ({ workshop, search }) => {
               </>
             )}
 
-            {/* Seller info */}
             {workshop.seller && (
               <div className="mt-3 flex items-center gap-3 bg-[#EEEEEE] rounded-xl px-3 py-2 w-fit">
                 <div className="w-7 h-7 rounded-full bg-[#D84040]/10 flex items-center justify-center shrink-0">
@@ -180,7 +186,6 @@ const WorkshopAttendees = ({ workshop, search }) => {
             )}
           </div>
 
-          {/* Badge */}
           <div className="flex flex-col items-end gap-2 shrink-0">
             <span
               className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border ${
@@ -204,7 +209,6 @@ const WorkshopAttendees = ({ workshop, search }) => {
           </div>
         </div>
 
-        {/* Toggle */}
         <button
           onClick={() => setOpen((o) => !o)}
           className="mt-4 w-full flex items-center justify-between px-4 py-2.5 rounded-xl bg-[#EEEEEE] hover:bg-[#D84040]/10 transition-colors duration-200 text-sm font-semibold text-[#1D1616]"
@@ -221,7 +225,6 @@ const WorkshopAttendees = ({ workshop, search }) => {
         </button>
       </div>
 
-      {/* Attendees list */}
       {open && (
         <div className="border-t border-gray-100">
           {attendees.length === 0 ? (
@@ -298,12 +301,13 @@ const AdminReservations = () => {
           headers: { Authorization: token },
         });
         const data = await res.json();
-        // API returns data.data as array
+
         const list =
           data?.data?.data ||
           data?.data?.reservationsList ||
           data?.data?.reservations ||
           [];
+
         setTotalRes(list.length);
         setWorkshops(groupByWorkshop(list));
       } catch {

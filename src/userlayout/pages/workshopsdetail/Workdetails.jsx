@@ -361,7 +361,7 @@ const WorkshopCard = ({ workshop, index }) => {
     <div
       className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer group hover:-translate-y-1 flex flex-col justify-between"
       style={{ animationDelay: `${index * 60}ms` }}
-      onClick={() => navigate(`/workshop/${workshop._id}`)}
+      onClick={() => navigate(`/workshopdet/${workshop._id}`)}
     >
       <div
         className="relative w-full overflow-hidden rounded-t-2xl"
