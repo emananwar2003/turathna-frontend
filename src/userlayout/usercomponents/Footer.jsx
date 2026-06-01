@@ -74,37 +74,79 @@ const Footer = () => {
                   Craft Experiences
                 </Link>
               </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  Meet the Artisans
-                </a>
-              </li>
-              
             </ul>
           </div>
-
-          {/* Newsletter */}
+          {/* Categories — right corner */}
           <div>
             <h4 className="text-lg font-serif mb-6 text-gray-200">
-              Newsletter
+              Categories
             </h4>
-            <p className="text-gray-400 text-sm mb-4">
-              Subscribe to discover new collections, artisan stories, and
-              exclusive offers.
-            </p>
-            <form className="flex">
-              <input
-                type="email"
-                placeholder="Email address"
-                className="bg-gray-800 text-white px-4 py-2 w-full focus:outline-none focus:ring-1 focus:ring-[#C43D36]"
-              />
-              <button
-                type="submit"
-                className="bg-[#C43D36] hover:bg-[#a6312a] px-4 py-2 transition-colors duration-300 font-semibold uppercase text-xs tracking-wider"
-              >
-                Join
-              </button>
-            </form>
+            <ul className="space-y-4 text-sm text-gray-400">
+              <li>
+                <Link
+                  to="/category/textiles-and-embroidery"
+                  className="hover:text-white transition-colors"
+                >
+                  Textiles & Embroidery
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/category/pottery-and-ceramics"
+                  className="hover:text-white transition-colors"
+                >
+                  Pottery & Ceramics
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/category/jewelry-and-accessories"
+                  className="hover:text-white transition-colors"
+                >
+                  Jewelry & Accessories
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/category/home-decor"
+                  className="hover:text-white transition-colors"
+                >
+                  Home Decor
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/category/bags-and-leather-goods"
+                  className="hover:text-white transition-colors"
+                >
+                  Bags & Leather Goods
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/category/wood-and-carved-art"
+                  className="hover:text-white transition-colors"
+                >
+                  Wood & Carved Art
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/category/art-and-paintings"
+                  className="hover:text-white transition-colors"
+                >
+                  Art & Paintings
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/category/handmade-gifts"
+                  className="hover:text-white transition-colors"
+                >
+                  Handmade Gifts
+                </Link>
+              </li>
+            </ul>
           </div>
         </div>
 
@@ -113,17 +155,6 @@ const Footer = () => {
           <p>
             &copy; {new Date().getFullYear()} Turathna. All rights reserved.
           </p>
-          <div className="flex gap-4 mt-4 md:mt-0">
-            <a href="#" className="hover:text-gray-300">
-              Privacy Policy
-            </a>
-            <a href="#" className="hover:text-gray-300">
-              Terms of Service
-            </a>
-            <a href="#" className="hover:text-gray-300">
-              Shipping & Returns
-            </a>
-          </div>
         </div>
       </div>
     </footer>

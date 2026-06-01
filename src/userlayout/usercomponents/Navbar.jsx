@@ -1,13 +1,11 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import {
   Navbar,
   Collapse,
   Typography,
   Button,
   IconButton,
-  List,
-  ListItem,
   Menu,
   MenuHandler,
   MenuList,
@@ -21,8 +19,6 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { Avatar } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
-
 import {
   Squares2X2Icon,
   SwatchIcon,
@@ -36,7 +32,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { useAuth } from "../../context/Authcontext";
 import ProfileMenu from "./ProfileMenu";
-// import LanguageSwitcher from "./LanguageSwitcher";
+
 const navListMenuItems = [
   {
     title: "All Products",
@@ -59,7 +55,7 @@ const navListMenuItems = [
     icon: SparklesIcon,
   },
   {
-    title: "Home Décor",
+    title: "home-decor",
     description: "Authentic Egyptian decorative pieces.",
     icon: HomeIcon,
   },
@@ -84,26 +80,43 @@ const navListMenuItems = [
     icon: PaintBrushIcon,
   },
 ];
+
+const NavLink = ({ to, children }) => (
+  <Link
+    to={to}
+    className="text-[#EEEEEE] font-serif text-2xl px-4 py-2 rounded-lg hover:bg-[#2B0B0B] transition-colors duration-150"
+  >
+    {children}
+  </Link>
+);
+
+const MobileNavLink = ({ to, children, onClick }) => (
+  <Link
+    to={to}
+    onClick={onClick}
+    className="text-[#EEEEEE] font-serif text-lg px-4 py-3 rounded-lg hover:bg-[#2B0B0B] transition-colors duration-150 block w-full"
+  >
+    {children}
+  </Link>
+);
+
 const Navbars = () => {
   const [openNav, setOpenNav] = React.useState(false);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const { token, loading } = useAuth();
-
-
   const navigate = useNavigate();
 
   const handleClick = () => {
     Swal.fire({
       title: "Are you a buyer or a seller?",
       html: `
-      <div style="text-align:center;">
-       
-        <button id="speakBtn" class="speak-btn">
-          🔊 تشغيل الصوت
-        </button>
-      </div>
-    `,
+        <div style="text-align:center;">
+          <button id="speakBtn" class="speak-btn">
+            🔊 تشغيل الصوت
+          </button>
+        </div>
+      `,
       icon: "question",
       confirmButtonText: "Seller",
       cancelButtonText: "Buyer",
@@ -113,15 +126,10 @@ const Navbars = () => {
       cancelButtonColor: "#1D1616",
       didOpen: () => {
         const text = "هل انت بائع ام شاري؟ ان كنت بائع اضغط علي الزر الاحمر";
-
-        const speak = () => {
-          const speech = new SpeechSynthesisUtterance(text);
-          speech.lang = "ar-EG";
-          speech.rate = 1;
-          window.speechSynthesis.speak(speech);
-        };
-
-        speak();
+        const speech = new SpeechSynthesisUtterance(text);
+        speech.lang = "ar-EG";
+        speech.rate = 1;
+        window.speechSynthesis.speak(speech);
       },
     }).then((result) => {
       if (result.isConfirmed) {
@@ -134,29 +142,29 @@ const Navbars = () => {
 
   React.useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 960) {
-        setOpenNav(false);
-      }
+      if (window.innerWidth >= 960) setOpenNav(false);
     };
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const handleMenuItemClick = (key, title) => {
+    setIsMenuOpen(false);
+    setIsMobileMenuOpen(false);
+    setOpenNav(false);
+    if (key === 0) {
+      navigate("/products");
+    } else {
+      navigate(`/category/${title.toLowerCase().replace(/\s+/g, "-")}`);
+    }
+  };
 
   const renderMenuItems = navListMenuItems.map(
     ({ icon, title, description }, key) => (
       <MenuItem
         key={key}
         className="flex items-center gap-3 rounded-lg"
-        onClick={() => {
-          setIsMenuOpen(false);
-
-          if (key === 0) {
-            navigate("/products");
-          } else {
-            navigate(`/category/${title.toLowerCase().replace(/\s+/g, "-")}`);
-          }
-        }}
+        onClick={() => handleMenuItemClick(key, title)}
       >
         <div className="flex items-center justify-center rounded-lg bg-blue-gray-50 p-2">
           {React.createElement(icon, {
@@ -175,66 +183,47 @@ const Navbars = () => {
       </MenuItem>
     ),
   );
+
   return (
     <div className="w-full overflow-x-hidden">
-      <Navbar className="sticky top-0 z-50 w-full max-w-full rounded-none px-0 py-0 shadow-md bg-[#8f1515] border-[#2B0B0B] text-[#EEEEEE]">
+      <Navbar className="sticky top-0 z-50 w-full max-w-full rounded-none px-4 py-2 shadow-md bg-[#8f1515] border-[#2B0B0B] text-[#EEEEEE]">
+        {/* Main Row */}
         <div className="flex items-center justify-between text-[#EEEEEE] font-serif">
+          {/* Logo */}
           <Typography
-            as="a"
-            href="#"
+            as={Link}
+            to="/"
             variant="h5"
-            className="font-bold text-4xl flex items-center gap-2 font-serif"
+            className="font-bold text-4xl flex items-center gap-2 font-serif text-[#EEEEEE]"
           >
             <Avatar src="/logo.jpg" alt="logo" size="xl" />
             Turathna
           </Typography>
 
           {/* Desktop Menu */}
-          <div className="hidden lg:flex items-center gap-5 text-[#EEEEEE] font-serif">
-            <List className="flex-row p-0 text-[#EEEEEE] text-2xl font-serif">
-              <ListItem>
-                <Link to="/" className="inline-flex items-center w-full">
-                  Home
-                </Link>
-              </ListItem>
+          <div className="hidden  lg:flex items-center gap-1 text-[#EEEEEE] font-serif">
+            <NavLink to="/">Home</NavLink>
 
-              <Menu
-                open={isMenuOpen}
-                handler={setIsMenuOpen}
-                placement="bottom"
-              >
-                <MenuHandler>
-                  <ListItem className="flex items-center gap-2">
-                    Products
-                    <ChevronDownIcon
-                      className={`h-4 w-4 transition-transform ${
-                        isMenuOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </ListItem>
-                </MenuHandler>
+            {/* Products Dropdown */}
+            <Menu open={isMenuOpen} handler={setIsMenuOpen} placement="bottom">
+              <MenuHandler>
+                <button className="flex items-center gap-2 text-[#EEEEEE] font-serif text-2xl px-4 py-2 rounded-lg hover:bg-[#2B0B0B] transition-colors duration-150">
+                  Products
+                  <ChevronDownIcon
+                    className={`h-4 w-4 transition-transform duration-200 ${
+                      isMenuOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+              </MenuHandler>
+              <MenuList className="grid grid-cols-3 gap-3">
+                {renderMenuItems}
+              </MenuList>
+            </Menu>
 
-                <MenuList className="grid grid-cols-3 gap-3">
-                  {renderMenuItems}
-                </MenuList>
-              </Menu>
+            <NavLink to="/workshops">Workshops</NavLink>
+            <NavLink to="/about">About</NavLink>
 
-              <ListItem className="p-7 justify-center">
-                <Link
-                  to="/workshops"
-                  className="inline-flex items-center w-full"
-                >
-                  Workshops
-                </Link>
-              </ListItem>
-
-              <ListItem>
-                <Link to="/about" className="inline-flex items-center w-full">
-                  About
-                </Link>
-              </ListItem>
-            </List>
-            {/* <LanguageSwitcher /> */}
             {!loading && token ? (
               <ProfileMenu />
             ) : (
@@ -248,10 +237,10 @@ const Navbars = () => {
             )}
           </div>
 
-          {/* Mobile Button */}
+          {/* Mobile Hamburger */}
           <IconButton
             variant="text"
-            className="lg:hidden text-[#EEEEEE] "
+            className="lg:hidden text-[#EEEEEE]"
             onClick={() => setOpenNav(!openNav)}
           >
             {openNav ? (
@@ -264,45 +253,49 @@ const Navbars = () => {
 
         {/* Mobile Menu */}
         <Collapse open={openNav}>
-          <List className="mt-4 text-[#EEEEEE] ">
-            <ListItem>
-              <Link to="/" className="inline-flex items-center w-full">
-                Home
-              </Link>
-            </ListItem>
+          <div className="flex flex-col gap-1 mt-3 pb-3">
+            <MobileNavLink to="/" onClick={() => setOpenNav(false)}>
+              Home
+            </MobileNavLink>
 
-            <ListItem onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+            {/* Mobile Products Toggle */}
+            <button
+              className="text-[#EEEEEE] font-serif text-lg px-4 py-3 rounded-lg hover:bg-[#2B0B0B] transition-colors duration-150 flex items-center justify-between w-full"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
               Products
-            </ListItem>
+              <ChevronDownIcon
+                className={`h-4 w-4 transition-transform duration-200 ${
+                  isMobileMenuOpen ? "rotate-180" : ""
+                }`}
+              />
+            </button>
 
-            <Collapse open={isMobileMenuOpen}>{renderMenuItems}</Collapse>
+            <Collapse open={isMobileMenuOpen}>
+              <div className="pl-4 flex flex-col gap-1">{renderMenuItems}</div>
+            </Collapse>
 
-            <ListItem>
-              <Link to="/workshops" className="inline-flex items-center w-full">
-                Workshops
-              </Link>
-            </ListItem>
+            <MobileNavLink to="/workshops" onClick={() => setOpenNav(false)}>
+              Workshops
+            </MobileNavLink>
 
-            <ListItem>
-              <Link to="/about" className="inline-flex items-center w-full">
-                About
-              </Link>
-            </ListItem>
-          </List>
-          {/* <LanguageSwitcher /> */}
+            <MobileNavLink to="/about" onClick={() => setOpenNav(false)}>
+              About
+            </MobileNavLink>
 
-          <div className="flex gap-2 mt-4">
-            {!loading && token ? (
-              <ProfileMenu />
-            ) : (
-              <Button
-                variant="text"
-                className="text-2xl text-[#EEEEEE]"
-                onClick={handleClick}
-              >
-                <CiLogin />
-              </Button>
-            )}
+            <div className="mt-2 px-2">
+              {!loading && token ? (
+                <ProfileMenu />
+              ) : (
+                <Button
+                  variant="text"
+                  className="text-2xl text-[#EEEEEE]"
+                  onClick={handleClick}
+                >
+                  <CiLogin />
+                </Button>
+              )}
+            </div>
           </div>
         </Collapse>
       </Navbar>
