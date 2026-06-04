@@ -40,13 +40,13 @@ const orderStatusLabel = {
     bg: "bg-green-100",
     text: "text-green-800",
     border: "border-green-300",
-  }
+  },
 };
 
 const SellerOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [updating, setUpdating] = useState(null); // productId being updated
+  const [updating, setUpdating] = useState(null);
 
   const token = localStorage.getItem("token");
   const sellerId = localStorage.getItem("id");
@@ -56,9 +56,7 @@ const SellerOrders = () => {
       try {
         const res = await fetch(
           `http://localhost:5000/api/v1/order/seller/${sellerId}`,
-          {
-            headers: { Authorization: token },
-          },
+          { headers: { Authorization: token } },
         );
         const data = await res.json();
         setOrders(data?.data?.orders || []);
@@ -101,7 +99,6 @@ const SellerOrders = () => {
       );
       if (!res.ok) throw new Error();
 
-      // Update locally
       setOrders((prev) =>
         prev.map((o) => {
           if (o.orderId !== orderId) return o;
@@ -182,7 +179,7 @@ const SellerOrders = () => {
                 >
                   <div className="h-1.5 w-full bg-gradient-to-r from-[#1D1616] via-[#D84040] to-[#8E1616]" />
 
-                  {/* Order header */}
+                  {/* Order Header */}
                   <div className="p-5 flex items-center justify-between gap-3 flex-wrap">
                     <div className="space-y-1">
                       <p className="text-xs text-gray-400 font-mono">
@@ -212,22 +209,22 @@ const SellerOrders = () => {
                   {/* Items */}
                   <div className="divide-y divide-gray-50 border-t border-gray-100">
                     {(order.orderItems || []).map((item, i) => {
-                      const p = item.product || {};
+                      const productId = item.product?._id;
                       const iStatus =
                         statusLabel[item.itemStatus] || statusLabel.pending;
                       const isDone = item.itemStatus === "finished";
 
                       return (
                         <div
-                          key={p._id || i}
+                          key={productId || i}
                           className="p-4 flex items-center gap-4"
                         >
                           {/* Image */}
                           <div className="w-32 h-32 rounded-xl overflow-hidden bg-[#EEEEEE] shrink-0">
-                            {p.coverImage ? (
+                            {item.coverImage ? (
                               <img
-                                src={p.coverImage}
-                                alt={p.title_ar}
+                                src={item.coverImage}
+                                alt={item.name}
                                 className="w-full h-full object-cover"
                               />
                             ) : (
@@ -238,13 +235,13 @@ const SellerOrders = () => {
                           {/* Info */}
                           <div className="flex-1 min-w-0">
                             <p className="font-bold text-[#1D1616] text-sm truncate">
-                              {p.title_ar}
+                              {item.name}
                             </p>
                             <p className="text-sm text-black mt-0.5">
                               الكمية: {item.quantity}
                             </p>
                             <p className="text-[#D84040] font-bold text-sm mt-0.5">
-                              {p.originalPrice} ج.م
+                              {item.price} ج.م
                             </p>
                           </div>
 
@@ -263,11 +260,11 @@ const SellerOrders = () => {
                                 onChange={(e) =>
                                   handleStatusChange(
                                     order.orderId,
-                                    p._id,
+                                    productId,
                                     e.target.value,
                                   )
                                 }
-                                disabled={updating === p._id}
+                                disabled={updating === productId}
                                 className="border border-gray-200 rounded-xl px-3 py-1.5 text-xs font-semibold text-[#1D1616] bg-white focus:outline-none focus:border-[#D84040] disabled:opacity-50 cursor-pointer"
                               >
                                 <option value="pending">قيد الانتظار</option>
