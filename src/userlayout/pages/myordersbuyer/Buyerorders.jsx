@@ -24,6 +24,13 @@ const orderStatusConfig = {
     border: "border-amber-300",
     icon: <ClockIcon className="h-3.5 w-3.5" />,
   },
+  "in progress": {
+    label: "In Progress",
+    bg: "bg-blue-100",
+    text: "text-blue-800",
+    border: "border-blue-300",
+    icon: <ClockIcon className="h-3.5 w-3.5" />,
+  },
   finished: {
     label: "Finished",
     bg: "bg-green-100",
@@ -74,9 +81,7 @@ const BuyerOrders = () => {
       try {
         const res = await fetch(
           `http://localhost:5000/api/v1/order/buyer/${buyerId}`,
-          {
-            headers: { Authorization: token },
-          },
+          { headers: { Authorization: token } },
         );
         const data = await res.json();
         setOrders(data?.data?.ordersList || data?.data?.orders || []);
@@ -108,6 +113,7 @@ const BuyerOrders = () => {
   return (
     <div className="min-h-screen w-full" style={BG_STYLE}>
       <div className="max-w-4xl mx-auto px-4 py-10">
+        {/* Page Title */}
         <div className="text-center mb-10">
           <p className="text-[#D84040] text-xs font-bold uppercase tracking-widest mb-2">
             Your purchases
@@ -121,6 +127,7 @@ const BuyerOrders = () => {
           </Typography>
         </div>
 
+        {/* Empty State */}
         {orders.length === 0 ? (
           <div className="text-center py-24 space-y-4">
             <ShoppingBagIcon className="h-20 w-20 text-[#D84040]/20 mx-auto" />
@@ -145,12 +152,7 @@ const BuyerOrders = () => {
               const sStatus =
                 shippingConfig[order.shippingStatus] || shippingConfig.pending;
               const total = (order.orderItems || []).reduce(
-                (sum, item) =>
-                  sum +
-                  (item.product?.finalPrice ||
-                    item.product?.originalPrice ||
-                    0) *
-                    (item.quantity || 1),
+                (sum, item) => sum + (item.price || 0) * (item.quantity || 1),
                 0,
               );
 
@@ -159,15 +161,16 @@ const BuyerOrders = () => {
                   key={oid}
                   className="bg-white rounded-2xl shadow-md border border-[#D84040]/5 overflow-hidden hover:shadow-lg transition-all duration-200"
                 >
+                  {/* Top accent bar */}
                   <div className="h-1.5 w-full bg-gradient-to-r from-[#1D1616] via-[#D84040] to-[#8E1616]" />
 
-                  {/* Header */}
+                  {/* Order Header */}
                   <div className="p-5 flex items-start justify-between gap-3 flex-wrap border-b border-gray-100">
                     <div className="space-y-1">
-                      <p className="text-xl text-black font-mono">
+                      <p className="text-base font-bold text-[#1D1616] font-mono">
                         Order #{oid?.slice(-8).toUpperCase()}
                       </p>
-                      <div className="flex items-center gap-2 text-xs text-black">
+                      <div className="flex items-center gap-2 text-xs text-gray-500">
                         <CalendarDaysIcon className="h-3.5 w-3.5 text-[#D84040]" />
                         {order.orderDate
                           ? new Date(order.orderDate).toLocaleDateString(
@@ -197,49 +200,57 @@ const BuyerOrders = () => {
                     </div>
                   </div>
 
-                  {/* Items */}
+                  {/* Order Items */}
                   <div className="divide-y divide-gray-50">
-                    {(order.orderItems || []).map((item, i) => {
-                      const p = item.product || {};
-                      return (
+                    {(order.orderItems || []).map((item, i) => (
+                      <div
+                        key={item.name || i}
+                        className="p-4 flex items-center gap-4"
+                      >
+                        {/* Cover Image */}
+                        {item.coverImage ? (
+                          <img
+                            src={item.coverImage}
+                            alt={item.name}
+                            className="h-16 w-16 rounded-xl object-cover shrink-0 border border-gray-100 shadow-sm"
+                            onError={(e) => {
+                              e.target.style.display = "none";
+                              e.target.nextSibling.style.display = "flex";
+                            }}
+                          />
+                        ) : null}
                         <div
-                          key={p._id || i}
-                          className="p-4 flex items-center gap-4"
+                          className="h-16 w-16 rounded-xl bg-gray-100 shrink-0 items-center justify-center"
+                          style={{ display: item.coverImage ? "none" : "flex" }}
                         >
-                          <div className="w-42 h-32 rounded-xl overflow-hidden bg-[#EEEEEE] shrink-0">
-                            {p.coverImage ? (
-                              <img
-                                src={p.coverImage}
-                                alt={p.title_en}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-gray-100" />
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-[#1D1616] text-sm truncate">
-                              {p.title_en || p.title_ar}
-                            </p>
-                            <p className="text-xs text-black mt-0.5">
-                              Qty: {item.quantity}
-                            </p>
-                          </div>
-                          <div className="text-right shrink-0">
-                            <p className="text-[#D84040] font-bold text-sm">
-                              {(
-                                (p.finalPrice || p.originalPrice || 0) *
-                                item.quantity
-                              ).toLocaleString()}{" "}
-                              EGP
-                            </p>
-                          </div>
+                          <ShoppingBagIcon className="h-6 w-6 text-gray-300" />
                         </div>
-                      );
-                    })}
+
+                        {/* Item Details */}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-[#1D1616] text-sm truncate">
+                            {item.name}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-0.5">
+                            Qty: {item.quantity}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            {item.price} EGP each
+                          </p>
+                        </div>
+
+                        {/* Item Subtotal */}
+                        <p className="text-[#D84040] font-bold text-sm shrink-0">
+                          {(
+                            (item.price || 0) * (item.quantity || 1)
+                          ).toLocaleString()}{" "}
+                          EGP
+                        </p>
+                      </div>
+                    ))}
                   </div>
 
-                  {/* Footer */}
+                  {/* Order Footer */}
                   <div className="px-5 py-3 border-t-2 border-dashed border-gray-100 flex items-center justify-between">
                     <p className="text-xs text-gray-400">
                       {order.orderItems?.length || 0} item(s)

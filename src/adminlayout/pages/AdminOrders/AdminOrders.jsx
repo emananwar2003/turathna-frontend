@@ -24,6 +24,12 @@ const orderStatusConfig = {
     text: "text-amber-800",
     border: "border-amber-300",
   },
+  "in progress": {
+    label: "In Progress",
+    bg: "bg-blue-100",
+    text: "text-blue-800",
+    border: "border-blue-300",
+  },
   finished: {
     label: "Finished",
     bg: "bg-green-100",
@@ -97,13 +103,12 @@ const AdminOrders = () => {
     setFiltered(
       q
         ? orders.filter((o) => {
-            // FIX 3: prioritise _id over orderId to match API shape
-            const buyer = o.addressDetails || o.buyerDetails || {};
+            const buyer = o.addressDetails || {};
             return (
               (buyer.first_name || "").toLowerCase().includes(q) ||
               (buyer.last_name || "").toLowerCase().includes(q) ||
               (buyer.phone_number || "").includes(q) ||
-              (o._id || o.orderId || "").toLowerCase().includes(q)
+              (o._id || "").toLowerCase().includes(q)
             );
           })
         : orders,
@@ -134,13 +139,9 @@ const AdminOrders = () => {
         },
       );
       if (!res.ok) throw new Error();
-
-      // FIX 4: consistent _id-first comparison in the map
       setOrders((prev) =>
         prev.map((o) =>
-          (o._id || o.orderId) === orderId
-            ? { ...o, shippingStatus: newStatus }
-            : o,
+          o._id === orderId ? { ...o, shippingStatus: newStatus } : o,
         ),
       );
       Swal.fire({
@@ -177,6 +178,7 @@ const AdminOrders = () => {
   return (
     <div className="min-h-screen w-full" style={BG_STYLE}>
       <div className="max-w-5xl mx-auto px-4 py-10">
+        {/* Page Title */}
         <div className="text-center mb-6">
           <p className="text-[#D84040] text-xs font-bold uppercase tracking-widest mb-2">
             Platform Overview
@@ -235,18 +237,14 @@ const AdminOrders = () => {
         ) : (
           <div className="space-y-5">
             {filtered.map((order) => {
-              // FIX 1 & 2: _id first for oid, addressDetails first for buyer
-              const oid = order._id || order.orderId;
+              const oid = order._id;
               const oStatus =
                 orderStatusConfig[order.orderStatus] ||
                 orderStatusConfig.pending;
               const sStatus =
                 shippingConfig[order.shippingStatus] || shippingConfig.pending;
               const isFinished = order.orderStatus === "finished";
-
-              // FIX 1 (root cause): addressDetails takes priority — that's what the API returns
-              const buyer = order.addressDetails || order.buyerDetails || {};
-
+              const buyer = order.addressDetails || {};
               const isUpdating = updating === oid;
 
               return (
@@ -256,7 +254,7 @@ const AdminOrders = () => {
                 >
                   <div className="h-1.5 w-full bg-gradient-to-r from-[#1D1616] via-[#D84040] to-[#8E1616]" />
 
-                  {/* Order header */}
+                  {/* Order Header */}
                   <div className="p-5 border-b border-gray-100">
                     <div className="flex items-start justify-between gap-3 flex-wrap">
                       <div className="space-y-1">
@@ -278,7 +276,6 @@ const AdminOrders = () => {
                         </div>
                       </div>
                       <div className="flex items-center gap-2 flex-wrap">
-                        {/* Order status badge */}
                         <span
                           className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${oStatus.bg} ${oStatus.text} ${oStatus.border}`}
                         >
@@ -290,7 +287,6 @@ const AdminOrders = () => {
                           {oStatus.label}
                         </span>
 
-                        {/* Shipping: static badge for non-finished, dropdown for finished */}
                         {!isFinished ? (
                           <span
                             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${sStatus.bg} ${sStatus.text} ${sStatus.border}`}
@@ -318,87 +314,59 @@ const AdminOrders = () => {
                     </div>
                   </div>
 
-                  {/* Buyer info — renders as long as first_name exists anywhere in buyer */}
-                  {(buyer.first_name || buyer.firstname) && (
+                  {/* Buyer Info */}
+                  {buyer.first_name && (
                     <div className="px-5 py-3 bg-[#EEEEEE]/50 flex items-center gap-3 flex-wrap border-b border-gray-100">
                       <div className="flex items-center gap-2">
                         <div className="w-8 h-8 rounded-full bg-[#D84040]/10 flex items-center justify-center shrink-0">
                           <UserIcon className="h-4 w-4 text-[#D84040]" />
                         </div>
                         <p className="font-semibold text-[#1D1616] text-sm">
-                          {buyer.first_name || buyer.firstname}{" "}
-                          {buyer.last_name || buyer.lastname}
+                          {buyer.first_name} {buyer.last_name}
                         </p>
                       </div>
-                      {(buyer.phone_number || buyer.phone) && (
+                      {buyer.phone_number && (
                         <div className="flex items-center gap-1.5 text-xs text-gray-500">
                           <PhoneIcon className="h-3.5 w-3.5 text-[#D84040]" />
-                          <span dir="ltr">
-                            {buyer.phone_number || buyer.phone}
-                          </span>
+                          <span dir="ltr">{buyer.phone_number}</span>
                         </div>
                       )}
                     </div>
                   )}
 
-                  {/* Order items */}
+                  {/* Order Items */}
                   <div className="divide-y divide-gray-50">
-                    {(order.orderItems || []).map((item, i) => {
-                      const p = item.product || {};
-                      return (
-                        <div
-                          key={p._id || i}
-                          className="p-4 flex items-center gap-4"
-                        >
-                          <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#EEEEEE] shrink-0">
-                            {p.coverImage ? (
-                              <img
-                                src={p.coverImage}
-                                alt={p.title_ar || p.title_en}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-full h-full bg-gray-100" />
-                            )}
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-[#1D1616] text-sm truncate">
-                              {p.title_ar || p.title_en}
-                            </p>
-                            <p className="text-xs text-gray-400 mt-0.5">
-                              Qty: {item.quantity}
-                            </p>
-                            <p className="text-[#D84040] font-bold text-sm mt-0.5">
-                              {p.originalPrice || p.finalPrice} EGP
-                            </p>
-                          </div>
-                          {/* Per-item seller full info */}
-                          {p.seller && (
-                            <div className="shrink-0 flex items-center gap-2 bg-[#EEEEEE]/60 rounded-xl px-3 py-2 border border-[#D84040]/10">
-                              <div className="w-7 h-7 rounded-full bg-[#D84040]/10 flex items-center justify-center shrink-0">
-                                <UserIcon className="h-3.5 w-3.5 text-[#D84040]" />
-                              </div>
-                              <div className="min-w-0">
-                                <p className="text-xs font-semibold text-[#1D1616] truncate max-w-[120px]">
-                                  {p.seller?.name || "Unknown Seller"}
-                                </p>
-                                {p.seller?.phone && (
-                                  <div className="flex items-center gap-1 mt-0.5">
-                                    <PhoneIcon className="h-3 w-3 text-[#D84040] shrink-0" />
-                                    <p
-                                      className="text-xs text-gray-400"
-                                      dir="ltr"
-                                    >
-                                      {p.seller.phone}
-                                    </p>
-                                  </div>
-                                )}
-                              </div>
+                    {(order.orderItems || []).map((item, i) => (
+                      <div
+                        key={item.name || i}
+                        className="p-4 flex items-center gap-4"
+                      >
+                        <div className="w-14 h-14 rounded-xl overflow-hidden bg-[#EEEEEE] shrink-0">
+                          {item.coverImage ? (
+                            <img
+                              src={item.coverImage}
+                              alt={item.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                              <ShoppingBagIcon className="h-6 w-6 text-gray-300" />
                             </div>
                           )}
                         </div>
-                      );
-                    })}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-semibold text-[#1D1616] text-sm truncate">
+                            {item.name}
+                          </p>
+                          <p className="text-xs text-gray-400 mt-0.5">
+                            Qty: {item.quantity}
+                          </p>
+                          <p className="text-[#D84040] font-bold text-sm mt-0.5">
+                            {item.price} EGP
+                          </p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               );
